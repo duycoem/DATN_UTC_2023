@@ -1,6 +1,6 @@
 using System;
 
-namespace QuizIT.Models
+namespace QuizIT.Web.Models
 {
     public class ErrorViewModel
     {

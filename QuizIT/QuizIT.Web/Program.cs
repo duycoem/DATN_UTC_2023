@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace QuizIT
+namespace QuizIT.Web
 {
     public class Program
     {
