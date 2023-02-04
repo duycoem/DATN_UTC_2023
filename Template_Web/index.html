@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.3/jquery.min.js"
+      integrity="sha512-STof4xm1wgkfm7heWqFJVn58Hm3EtS31XFaagaa8VMReCXAkQnJZ+jEy8PCC/iT18dFy95WcExNHFTqLyp72eQ=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+    <title>Document</title>
+    <style>
+      .question-item {
+        margin-bottom: 15px;
+        line-height: 20px;
+        font-size: 14px;
+      }
+      .question-title {
+        margin-bottom: 15px;
+      }
+
+      .question-answer {
+        display: flex;
+        align-items: start;
+        margin-bottom: 8px;
+      }
+      .question-answer input[type="radio"] {
+        /* -ms-transform: scale(1.5);
+        -webkit-transform: scale(1.5);
+        transform: scale(1.15); */
+        margin-right: 10px;
+      }
+
+      .question-answer span {
+        color: red;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="question-item" style="width: 500px">
+      <p class="question-title">
+        <b>Câu 1: Đâu là ngôn ngữ lập trình phổ biến nhất hiện nay?</b
+        ><i>(Mức đô: Rất khó)</i>
+      </p>
+
+      <div class="question-answer">
+        <input type="radio" id="html" name="fav_language" value="HTML" />
+        <div>
+          <label for="html"
+            ><span>A:</span> Câu 2: Đâu là ngôn ngữ lập trình phổ biến nhất hiện
+            nay?</label
+          >
+        </div>
+      </div>
+      <div class="question-answer">
+        <input type="radio" id="html" name="fav_language" value="HTML" />
+        <div>
+          <label for="html"><span>A:</span> Câu 2: </label>
+        </div>
+      </div>
+      <p>Đúng</p>
+    </div>
+  </body>
+</html>
