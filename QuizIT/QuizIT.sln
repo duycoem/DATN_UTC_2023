@@ -3,7 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.32126.315
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuizIT.Web", "QuizIT.Web\QuizIT.Web.csproj", "{B93F8201-A2A6-4C5E-BC02-5F6CA3FF35D3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuizIT.Web", "QuizIT.Web\QuizIT.Web.csproj", "{B93F8201-A2A6-4C5E-BC02-5F6CA3FF35D3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuizIT.Service", "QuizIT.Service\QuizIT.Service.csproj", "{8CDFF615-65B9-43F6-AAD1-351999DF6FEB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuizIT.Common", "QuizIT.Common\QuizIT.Common.csproj", "{290F83F6-B37E-490E-9A5A-5489BC493B85}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +19,14 @@ Global
 		{B93F8201-A2A6-4C5E-BC02-5F6CA3FF35D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B93F8201-A2A6-4C5E-BC02-5F6CA3FF35D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B93F8201-A2A6-4C5E-BC02-5F6CA3FF35D3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8CDFF615-65B9-43F6-AAD1-351999DF6FEB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8CDFF615-65B9-43F6-AAD1-351999DF6FEB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8CDFF615-65B9-43F6-AAD1-351999DF6FEB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8CDFF615-65B9-43F6-AAD1-351999DF6FEB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{290F83F6-B37E-490E-9A5A-5489BC493B85}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{290F83F6-B37E-490E-9A5A-5489BC493B85}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{290F83F6-B37E-490E-9A5A-5489BC493B85}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{290F83F6-B37E-490E-9A5A-5489BC493B85}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

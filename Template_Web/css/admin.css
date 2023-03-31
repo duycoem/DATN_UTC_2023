@@ -1,8 +1,9 @@
 @import url("https://fonts.googleapis.com/css2?family=Poppins&display=swap");
 :root {
-  --black-1: #12192c;
+  --black-1: #222222;
   --white-1: #ededed;
-  --orange-1: #f5a623;
+  --green-1: #24695c;
+  --white-2: #d0efe9;
 
   /* font-size */
   --fs-12: 12px;
@@ -34,17 +35,20 @@ a:hover {
 }
 .sidebar {
   position: fixed;
-  top: 0;
+  top: 64px;
   left: 0;
   width: 180px;
   height: 100vh;
-  background-color: var(--black-1);
+  background-color: #fff;
+  border-right: 1px solid #e6edef;
   padding: 1.25rem 0.5rem 2rem;
   transition: 0.5s;
+  z-index: 1;
 }
 .sidebar-logo {
-  margin-bottom: 2rem;
+  margin-bottom: 1.5rem;
   padding: 0 0.5px;
+  border-bottom: 1px solid #e6edef;
 }
 .sidebar-logo img {
   margin-right: 0.75rem;
@@ -52,7 +56,7 @@ a:hover {
   height: 25px;
 }
 .sidebar-logo span {
-  color: var(--white-1);
+  color: var(--black-1);
   font-weight: 700;
 }
 .sidebar-link {
@@ -61,13 +65,15 @@ a:hover {
   padding: 0.5rem;
   margin-bottom: 1rem;
   border-radius: 0.5rem;
-  color: var(--white-1);
-  transition: 0.5s;
-  white-space: nowrap;
-}
-.sidebar-item:hover {
-  background-color: var(--orange-1);
   color: var(--black-1);
+  transition: 0.25s;
+  white-space: nowrap;
+  font-weight: 500;
+}
+.sidebar-item:hover,
+.sidebar-item.active {
+  background-color: var(--green-1);
+  color: var(--white-2);
 }
 .sidebar-link i {
   font-size: 1.5rem;
@@ -75,14 +81,18 @@ a:hover {
 }
 .body {
   min-height: 100vh;
-  margin-left: 180px;
   background-color: #f6f8fc;
-  transition: 0.5s;
 }
 .header {
+  width: 100%;
   padding: 1.25rem 1rem;
   background-color: #fff;
-  box-shadow: 0 0 20px rgb(89 102 122 / 10%);
+  box-shadow: 0 0 20px rgb(25 124 207 / 8%);
+  z-index: 2;
+  position: fixed;
+  top: 0;
+  left: 0;
+  border-bottom: 1px solid #e6edef;
 }
 .btn-base {
   outline: none;
@@ -95,6 +105,31 @@ a:hover {
 .sidebar.active {
   width: 56px;
 }
-.sidebar.active + .body {
+.sidebar.active + .content {
   margin-left: 56px;
+}
+
+.content {
+  padding: 1.5rem;
+  margin-left: 180px;
+  margin-top: 64px;
+  transition: 0.5s;
+}
+
+.cotent-title {
+  font-size: 24px;
+  font-weight: 500;
+}
+
+@media (max-width: 768px) {
+  .sidebar {
+    left: -180px;
+  }
+  .content {
+    margin-left: 0;
+  }
+  .sidebar.active {
+    left: 0px;
+    width: 180px;
+  }
 }

@@ -39,51 +39,63 @@
     <link rel="stylesheet" href="css/admin.css" />
   </head>
   <body>
-    <div class="sidebar">
-      <div class="d-flex flex-column overflow-hidden">
-        <div class="sidebar-logo">
-          <a href="admin.html" class="sidebar-link">
-            <img src="image/logo-admin.png" alt="logo-admin" />
-            <span>Admin</span>
-          </a>
+    <header class="header d-flex justify-content-between align-items-center">
+      <button class="btn-base d-flex align-items-center" id="btn-sidebar">
+        <i class="bx bx-menu"></i>
+      </button>
+      <span>Hà Duy Anh</span>
+    </header>
+    <div class="body">
+      <div class="sidebar">
+        <div class="d-flex flex-column overflow-hidden">
+          <div class="sidebar-logo">
+            <a href="admin.html" class="sidebar-link">
+              <img src="image/logo-admin.png" alt="logo-admin" />
+              <span>Admin</span>
+            </a>
+          </div>
+          <div class="sidebar-list">
+            <a href="" class="sidebar-item sidebar-link">
+              <i class="bx bx-notepad"></i>
+              <span>Bộ đề</span>
+            </a>
+            <a href="" class="sidebar-item sidebar-link">
+              <i class="bx bx-question-mark"></i>
+              <span>Câu hỏi</span>
+            </a>
+            <a href="" class="sidebar-item sidebar-link">
+              <i class="bx bx-purchase-tag-alt"></i>
+              <span>Chủ đề</span>
+            </a>
+            <a href="" class="sidebar-item sidebar-link">
+              <i class="bx bx-user"></i>
+              <span>Người dùng</span>
+            </a>
+            <a href="" class="sidebar-item sidebar-link">
+              <i class="bx bx-home"></i>
+              <span>Trang chủ</span>
+            </a>
+          </div>
         </div>
-        <div class="sidebar-list">
-          <a href="" class="sidebar-item sidebar-link">
-            <i class="bx bx-notepad"></i>
-            <span>Bộ đề</span>
-          </a>
-          <a href="" class="sidebar-item sidebar-link">
-            <i class="bx bx-question-mark"></i>
-            <span>Câu hỏi</span>
-          </a>
-          <a href="" class="sidebar-item sidebar-link">
-            <i class="bx bx-purchase-tag-alt"></i>
-            <span>Chủ đề</span>
-          </a>
-          <a href="" class="sidebar-item sidebar-link">
-            <i class="bx bx-user"></i>
-            <span>Người dùng</span>
-          </a>
-          <a href="" class="sidebar-item sidebar-link">
-            <i class="bx bx-home"></i>
-            <span>Trang chủ</span>
-          </a>
+      </div>
+      <div class="content">
+        <h1 class="cotent-title">Danh sách câu hỏi</h1>
+        <div class="container">
+          <div class="row">
+            <div class="col-6">
+              <div style="height: 200px; background-color: red"></div>
+            </div>
+            <div class="col-6">
+              <div style="height: 200px; background-color: red"></div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
-    <div class="body">
-      <header class="header d-flex justify-content-between align-items-center">
-        <button class="btn-base d-flex align-items-center" id="btn-sidebar">
-          <i class="bx bx-menu"></i>
-        </button>
-        <span>Hà Duy Anh</span>
-      </header>
-      <div class="content"></div>
-    </div>
   </body>
   <script>
-    $("#btn-sidebar").click(function(){
-        $(".sidebar").toggleClass("active")
-    })
+    $("#btn-sidebar").click(function () {
+      $(".sidebar").toggleClass("active");
+    });
   </script>
 </html>

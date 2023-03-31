@@ -1,0 +1,27 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>@ViewBag.Title</title>
+    @*logo*@
+    <link rel="shortcut icon" type="image/x-icon" href="~/img/logo.png">
+    @*script*@
+    <script src="~/lib/font-awesome/js/all.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.min.js"></script>
+    @*css*@
+    <link href="~/css/common/const.css" rel="stylesheet" />
+    <link href="~/css/common/error.css" rel="stylesheet" />
+    <link href="~/lib/font-awesome/css/all.min.css" rel="stylesheet" />
+    <link href="~/lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8">
+                @RenderBody()
+            </div>
+        </div>
+    </div>
+</body>
+</html>
