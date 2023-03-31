@@ -16,4 +16,8 @@
     <Folder Include="wwwroot\img\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\QuizIT.Common\QuizIT.Common.csproj" />
+  </ItemGroup>
+
 </Project>

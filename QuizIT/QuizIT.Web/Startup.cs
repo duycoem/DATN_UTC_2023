@@ -1,8 +1,11 @@
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using QuizIT.Common.Helpers;
 
 namespace QuizIT.Web
 {
@@ -18,6 +21,10 @@ namespace QuizIT.Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            //Cấu hình để gọi HttpContext
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
+
             services.AddMvc(options =>
             {
                 options.EnableEndpointRouting = false;
@@ -44,6 +51,8 @@ namespace QuizIT.Web
             app.UseRouting();
 
             app.UseAuthorization();
+
+            HttpHelper.Configure(app.ApplicationServices.GetRequiredService<IHttpContextAccessor>());
 
             app.UseMvc(routes =>
             {

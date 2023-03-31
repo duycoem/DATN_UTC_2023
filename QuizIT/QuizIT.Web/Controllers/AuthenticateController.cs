@@ -1,8 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace QuizIT.Web.Controllers
 {
@@ -10,6 +6,12 @@ namespace QuizIT.Web.Controllers
     {
         [Route("/")]
         public IActionResult Login()
+        {
+            return View();
+        }
+
+        [Route("/registry")]
+        public IActionResult Registry()
         {
             return View();
         }

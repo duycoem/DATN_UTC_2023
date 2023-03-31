@@ -8,8 +8,21 @@ namespace QuizIT.Web.Controllers
 {
     public class SystemController : Controller
     {
-        [Route("/page-error-404")]
+        [Route("/error")]
         public IActionResult Error()
+        {
+            return View();
+        }
+
+        [Route("/forbidden")]
+        public IActionResult Forbidden()
+        {
+            return View();
+        }
+
+
+        [Route("/internal-server-error")]
+        public IActionResult InternalServerError()
         {
             return View();
         }
