@@ -14,7 +14,7 @@ a, a:hover {
 
 body {
     min-height: 100vh;
-    background-color: #f5ebeb !important;
+    background-color: var(--background-sub) !important;
     padding: 0 10px;
 }
 

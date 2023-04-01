@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace QuizIT.Web.Controllers
 {
-    public class SystemController : Controller
+    public class ErrorController : Controller
     {
         [Route("/error")]
         public IActionResult Error()

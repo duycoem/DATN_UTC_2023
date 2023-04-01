@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
@@ -6,6 +7,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using QuizIT.Common.Helpers;
+using QuizIT.Service.IServices;
+using QuizIT.Service.Services;
+using System;
 
 namespace QuizIT.Web
 {
@@ -21,9 +25,22 @@ namespace QuizIT.Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            //Cấu hình cookie authenticate
+            services.AddHttpContextAccessor();
+
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddCookie(o =>
+                {
+                    o.LoginPath = "/admin/login";
+                    o.ExpireTimeSpan = TimeSpan.FromDays(2);
+                });
+
             //Cấu hình để gọi HttpContext
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
+
+            //Đăng ký các service
+            services.AddSingleton<IAuthenticateService, AuthenticateService>();
 
             services.AddMvc(options =>
             {
@@ -49,6 +66,8 @@ namespace QuizIT.Web
             app.UseStaticFiles();
 
             app.UseRouting();
+
+            app.UseAuthentication();
 
             app.UseAuthorization();
 

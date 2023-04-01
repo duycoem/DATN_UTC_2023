@@ -3,4 +3,27 @@
     --white-1: #ededed;
     --main-color: #24695c;
     --white-2: #d0efe9;
+    --background-sub: #24695c1a;
+    --text-color: #242934;
 }
+
+.m-text-primary {
+    color: var(--main-color);
+}
+
+.m-bg-primary, .m-btn-primary {
+    background-color: var( --main-color) !important;
+}
+
+.m-btn-primary {
+    border-color: var( --main-color) !important;
+    transition: 0.5s;
+}
+
+    .m-bg-primary:hover, .m-btn-primary:hover {
+        background-color: #1b4c43 !important;
+    }
+
+    .m-btn-primary:hover {
+        border-color: #1b4c43 !important;
+    }

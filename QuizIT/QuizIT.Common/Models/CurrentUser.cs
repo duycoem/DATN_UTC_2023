@@ -14,8 +14,7 @@ namespace QuizIT.Common.Models
             get
             {
                 var claims = HttpHelper.HttpContext.Items["CurrentUser"] as IEnumerable<Claim>;
-                int uId;
-                if (!int.TryParse(claims?.Where(x => x.Type == ClaimTypes.NameIdentifier)?.FirstOrDefault()?.Value, out uId))
+                if (!int.TryParse(claims?.Where(x => x.Type == ClaimTypes.NameIdentifier)?.FirstOrDefault()?.Value, out int uId))
                 {
                     uId = -1;   //Giá trị khi chưa đăng nhập là -1
                 }

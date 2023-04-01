@@ -18,6 +18,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\QuizIT.Common\QuizIT.Common.csproj" />
+    <ProjectReference Include="..\QuizIT.Service\QuizIT.Service.csproj" />
   </ItemGroup>
 
 </Project>
