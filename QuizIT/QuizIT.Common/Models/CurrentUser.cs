@@ -1,9 +1,7 @@
 ﻿using QuizIT.Common.Helpers;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
-using System.Text;
 
 namespace QuizIT.Common.Models
 {
@@ -19,6 +17,20 @@ namespace QuizIT.Common.Models
                     uId = -1;   //Giá trị khi chưa đăng nhập là -1
                 }
                 return uId;
+            }
+            set { }
+        }
+
+        public static string Name
+        {
+            get
+            {
+                var claims = HttpHelper.HttpContext.Items["CurrentUser"] as IEnumerable<Claim>;
+                if (claims == null)
+                {
+                    return "";
+                }
+                return claims?.Where(x => x.Type == ClaimTypes.Name)?.FirstOrDefault()?.Value;
             }
             set { }
         }

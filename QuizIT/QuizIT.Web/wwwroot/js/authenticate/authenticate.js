@@ -56,7 +56,7 @@
                     if (response.responseCode == "200") {
                         toastr.success(response.responseMess, "Thông báo");
                         setTimeout(function () {
-                            window.location.href = "/";
+                            window.location.href = "/danh-sach-de";
                         }, 800);
                     }
                     else {
