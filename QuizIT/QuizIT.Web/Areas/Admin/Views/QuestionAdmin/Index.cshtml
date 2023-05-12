@@ -79,7 +79,7 @@
                         <tr>
                             <td>@((filter.PageNumber - 1)*filter.PageSize + index)</td>
                             <td>
-                                <a href="#" data-title="@question.Content.Trim()">@question.Content.Trim()</a>
+                                <a href="~/admin/cau-hoi/chi-tiet/@question.Id" data-title="@question.Content.Trim()">@question.Content.Trim()</a>
                             </td>
                             <td>@question.Category.CategoryName.Trim()</td>
                             <td>@question.AnswerA.Trim()</td>

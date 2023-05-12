@@ -163,7 +163,7 @@ namespace QuizIT.Service.Services
                 }
 
             }
-            catch (Exception e)
+            catch
             {
                 serviceResult.ResponseCode = ResponseCode.INTERNAL_SERVER_ERROR;
                 serviceResult.ResponseMess = ResponseMessage.INTERNAL_SERVER_ERROR;

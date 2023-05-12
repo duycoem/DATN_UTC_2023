@@ -84,17 +84,69 @@ $(document).ready(function () {
 
     //#region SỰ KIỆN THÊM CÂU HỎI
     $(document).on("click", "#btn-create", function () {
-        const question = $("#form-quesion").serializeObject();
-        console.log(question);
-        /*if (category.CategoryName == "") {
+        const question = $("#form-question").serializeObject();
+        //Loại bỏ dấu cách thừa
+        question.Content = question.Content.trim()
+        question.AnswerA = question.AnswerA.trim()
+        question.AnswerB = question.AnswerB.trim()
+        question.AnswerC = question.AnswerC.trim()
+        question.AnswerD = question.AnswerD.trim()
+        if (!isValidQuestion(question)) {
             toastr.error("Chưa nhập đủ thông tin", "Thông báo");
         }
         else {
+
             $.ajax({
-                url: "/admin/categoryadmin/eventupdate",
+                url: "/admin/questionadmin/eventcreate",
                 type: "POST",
                 data: {
-                    category: category,
+                    question: question,
+                },
+                dataType: "json",
+                beforeSend: function () {
+                    showLoading();
+                },
+                success: function (response) {
+                    if (response.responseCode == "200") {
+                        toastr.success(response.responseMess, "Thông báo");
+                        setTimeout(function () {
+                            window.location.href = "/admin/cau-hoi";
+                        }, 800);
+                    }
+                    else {
+                        toastr.error(response.responseMess, "Thông báo");
+                    }
+                },
+                error: function () {
+                    toastr.error("Máy chủ tạm thời không phản hồi, vui lòng thử lại sau", "Thông báo");
+
+                },
+            }).always(function () {
+                hideLoading();
+            });
+        }
+    });
+    //#endregion
+
+    //#region SỰ KIỆN SỬA CÂU HỎI
+    $(document).on("click", "#btn-update", function () {
+        const question = $("#form-question").serializeObject();
+        //Loại bỏ dấu cách thừa
+        question.Content = question.Content.trim()
+        question.AnswerA = question.AnswerA.trim()
+        question.AnswerB = question.AnswerB.trim()
+        question.AnswerC = question.AnswerC.trim()
+        question.AnswerD = question.AnswerD.trim()
+        if (!isValidQuestion(question)) {
+            toastr.error("Chưa nhập đủ thông tin", "Thông báo");
+        }
+        else {
+
+            $.ajax({
+                url: "/admin/questionadmin/eventupdate",
+                type: "POST",
+                data: {
+                    question: question,
                 },
                 dataType: "json",
                 beforeSend: function () {
@@ -117,19 +169,19 @@ $(document).ready(function () {
                 },
             }).always(function () {
                 hideLoading();
-            })
-        }*/
+            });
+        }
     });
     //#endregion
 
-    //#region SỰ KIỆN XOÁ CHỦ ĐỀ
+    //#region SỰ KIỆN XOÁ CÂU HỎI
     $(document).on("click", "#btn-delete", function () {
-        const category = $("#form-category").serializeObject();
+        const question = $("#form-question").serializeObject();
         $.ajax({
-            url: "/admin/categoryadmin/eventdelete",
+            url: "/admin/questionadmin/eventdelete",
             type: "POST",
             data: {
-                category: category,
+                question: question,
             },
             dataType: "json",
             beforeSend: function () {
@@ -139,7 +191,7 @@ $(document).ready(function () {
                 if (response.responseCode == "200") {
                     toastr.success(response.responseMess, "Thông báo");
                     setTimeout(function () {
-                        location.reload();
+                        window.location.href = "/admin/cau-hoi";
                     }, 800);
                 }
                 else {
@@ -152,11 +204,17 @@ $(document).ready(function () {
             },
         }).always(function () {
             hideLoading();
-        })
-
+        });
     });
     //#endregion
 
 });
 
 
+isValidQuestion = function (question) {
+    if (question.Content == "" || question.AnswerA == "" || question.AnswerB == "" || question.AnswerC == ""
+        || question.AnswerD == "") {
+        return false;
+    }
+    return true;
+}

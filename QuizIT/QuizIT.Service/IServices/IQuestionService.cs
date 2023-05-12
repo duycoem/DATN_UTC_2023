@@ -11,5 +11,13 @@ namespace QuizIT.Service.IServices
         Task<ServiceResult<string>> ImportExcel(List<Question> questionLst);
 
         ServiceResult<Question> GetPage(FilterQuestion filter);
+
+        ServiceResult<Question> GetById(int questionId);
+
+        Task<ServiceResult<string>> Create(Question question);
+
+        Task<ServiceResult<string>> Update(Question question);
+
+        Task<ServiceResult<string>> Delete(Question question);
     }
 }

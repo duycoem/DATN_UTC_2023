@@ -12,12 +12,11 @@ namespace QuizIT.Service.Services
     {
         private readonly QuizITContext dbContext = new QuizITContext();
         private readonly string IMPORT_SUCCESS = "Nhập file Excel thành công";
-        private readonly string CREATE_SUCCESS = "Thêm chủ đề thành công";
-        private readonly string UPDATE_SUCCESS = "Cập nhật chủ đề thành công";
-        private readonly string DELETE_SUCCESS = "Xoá chủ đề thành công";
-        private readonly string DELETE_FAILED = "Đã có bộ đề/câu hỏi thuộc chủ đề này, không thể xoá";
-        private readonly string EXISTS_CATEGORY_NAME = "Tên chủ đề đã trùng, vui lòng nhập tên khác";
-        private readonly string NOT_FOUND = "Chủ đề không tồn tại";
+        private readonly string CREATE_SUCCESS = "Thêm câu hỏi thành công";
+        private readonly string UPDATE_SUCCESS = "Cập nhật câu hỏi thành công";
+        private readonly string DELETE_SUCCESS = "Xoá câu hỏi thành công";
+        private readonly string DELETE_FAILED = "Đã có bộ đề/câu hỏi thuộc câu hỏi này, không thể xoá";
+        private readonly string NOT_FOUND = "Câu hỏi không tồn tại";
 
         public ServiceResult<Question> GetPage(FilterQuestion filter)
         {
@@ -52,6 +51,34 @@ namespace QuizIT.Service.Services
             return serviceResult;
         }
 
+        public ServiceResult<Question> GetById(int questionId)
+        {
+            ServiceResult<Question> serviceResult = new ServiceResult<Question>
+            {
+                ResponseCode = ResponseCode.SUCCESS,
+            };
+            try
+            {
+                var question = dbContext.Question.FirstOrDefault(q => q.Id == questionId);
+                if (question == null)
+                {
+                    serviceResult.ResponseCode = ResponseCode.NOT_FOUND;
+                    serviceResult.ResponseMess = NOT_FOUND;
+                }
+                else
+                {
+                    serviceResult.Result.Add(question);
+                }
+            }
+            catch
+            {
+                serviceResult.ResponseCode = ResponseCode.INTERNAL_SERVER_ERROR;
+                serviceResult.ResponseMess = ResponseMessage.INTERNAL_SERVER_ERROR;
+            }
+
+            return serviceResult;
+        }
+
         public async Task<ServiceResult<string>> ImportExcel(List<Question> questionLst)
         {
             ServiceResult<string> serviceResult = new ServiceResult<string>
@@ -63,6 +90,99 @@ namespace QuizIT.Service.Services
             {
                 await dbContext.Question.AddRangeAsync(questionLst);
                 await dbContext.SaveChangesAsync();
+            }
+            catch
+            {
+                serviceResult.ResponseCode = ResponseCode.INTERNAL_SERVER_ERROR;
+                serviceResult.ResponseMess = ResponseMessage.INTERNAL_SERVER_ERROR;
+            }
+
+            return serviceResult;
+        }
+
+        public async Task<ServiceResult<string>> Create(Question question)
+        {
+            ServiceResult<string> serviceResult = new ServiceResult<string>
+            {
+                ResponseCode = ResponseCode.SUCCESS,
+                ResponseMess = CREATE_SUCCESS
+            };
+            try
+            {
+                question.CreatedBy = CurrentUser.Id;
+                dbContext.Question.Add(question);
+                await dbContext.SaveChangesAsync();
+            }
+            catch
+            {
+                serviceResult.ResponseCode = ResponseCode.INTERNAL_SERVER_ERROR;
+                serviceResult.ResponseMess = ResponseMessage.INTERNAL_SERVER_ERROR;
+            }
+
+            return serviceResult;
+        }
+
+        public async Task<ServiceResult<string>> Update(Question question)
+        {
+            ServiceResult<string> serviceResult = new ServiceResult<string>
+            {
+                ResponseCode = ResponseCode.SUCCESS,
+                ResponseMess = UPDATE_SUCCESS
+            };
+            try
+            {
+
+                //Lấy ra question cũ trong db
+                var questionOld = dbContext.Question.FirstOrDefault(q => q.Id == question.Id);
+                //Sai id
+                if (questionOld == null)
+                {
+                    serviceResult.ResponseCode = ResponseCode.NOT_FOUND;
+                    serviceResult.ResponseMess = NOT_FOUND;
+                }
+                //Cập nhật lại các thông tin
+                questionOld.Content = question.Content;
+                questionOld.AnswerA = question.AnswerA;
+                questionOld.AnswerB = question.AnswerB;
+                questionOld.AnswerC = question.AnswerC;
+                questionOld.AnswerD = question.AnswerD;
+                questionOld.CategoryId = question.CategoryId;
+                questionOld.AnswerCorrect = question.AnswerCorrect;
+                dbContext.Question.Update(questionOld);
+                await dbContext.SaveChangesAsync();
+
+
+            }
+            catch
+            {
+                serviceResult.ResponseCode = ResponseCode.INTERNAL_SERVER_ERROR;
+                serviceResult.ResponseMess = ResponseMessage.INTERNAL_SERVER_ERROR;
+            }
+
+            return serviceResult;
+        }
+
+        public async Task<ServiceResult<string>> Delete(Question question)
+        {
+            ServiceResult<string> serviceResult = new ServiceResult<string>
+            {
+                ResponseCode = ResponseCode.SUCCESS,
+                ResponseMess = DELETE_SUCCESS
+            };
+            try
+            {
+                //Kiểm tra xem câu hỏi đã thuộc bộ đề nào chưa 
+                if (dbContext.ExamDetail.FirstOrDefault(q => q.QuestionId == question.Id) != null)
+                {
+                    serviceResult.ResponseCode = ResponseCode.BAD_REQUEST;
+                    serviceResult.ResponseMess = DELETE_FAILED;
+                }
+                else
+                {
+                    dbContext.Question.Remove(dbContext.Question.FirstOrDefault(q => q.Id == question.Id));
+                    await dbContext.SaveChangesAsync();
+                }
+
             }
             catch
             {

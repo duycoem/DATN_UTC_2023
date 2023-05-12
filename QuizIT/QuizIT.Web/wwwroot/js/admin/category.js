@@ -21,6 +21,7 @@ $(document).ready(function () {
             toastr.error("Chưa nhập đủ thông tin", "Thông báo");
         }
         else {
+            category.CategoryName = category.CategoryName.trim();
             $.ajax({
                 url: "/admin/categoryadmin/eventcreate",
                 type: "POST",
@@ -60,6 +61,7 @@ $(document).ready(function () {
             toastr.error("Chưa nhập đủ thông tin", "Thông báo");
         }
         else {
+            category.CategoryName = category.CategoryName.trim();
             $.ajax({
                 url: "/admin/categoryadmin/eventupdate",
                 type: "POST",

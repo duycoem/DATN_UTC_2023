@@ -68,6 +68,32 @@ namespace QuizIT.Web.Areas.Admin.Controllers
             return View();
         }
 
+        [Route("/admin/cau-hoi/chi-tiet/{questionId}")]
+        public IActionResult Detail(int questionId)
+        {
+            ViewBag.ActivePage = "question";
+            //Lấy ra tất cả thể loại để filter
+            var categoryServiceResult = categoryService.GetPage(new FilterCategory
+            {
+                PageSize = int.MaxValue
+            });
+            //Lấy chi tiết câu hỏi
+            var questionServiceResult = questionService.GetById(questionId);
+            //Sai id
+            if (questionServiceResult.ResponseCode == ResponseCode.NOT_FOUND)
+            {
+                return Redirect("~/error");
+            }
+            //Gọi service bị lỗi
+            if (categoryServiceResult.ResponseCode != ResponseCode.SUCCESS ||
+                questionServiceResult.ResponseCode != ResponseCode.SUCCESS)
+            {
+                return Redirect("~/internal-server-error");
+            }
+            ViewBag.CategoryLst = categoryServiceResult.Result;
+            return View(questionServiceResult.Result.FirstOrDefault());
+        }
+
         [HttpPost]
         public async Task<ActionResult> EventImportExcel(int categoryId, IFormFile fileExcel)
         {
@@ -105,45 +131,25 @@ namespace QuizIT.Web.Areas.Admin.Controllers
             return Json(await questionService.ImportExcel(questionLst));
         }
 
-        /*[HttpPost]
-        public IActionResult ModalCategory(int action, int categoryId)
-        {
-            //Gọi service để lấy thông tin
-            Category category = new Category();
-            if (action == MODAL_ACTION_UPDATE)
-            {
-                var serviceResult = categoryService.GetById(categoryId);
-                //Lỗi thì văng exception để ajax xử lý
-                if (serviceResult.ResponseCode != ResponseCode.SUCCESS)
-                {
-                    throw new Exception();
-                }
-                category = serviceResult.Result.FirstOrDefault();
-            }
-            ViewBag.Action = action;
-            ViewBag.CategoryId = categoryId;
-            return PartialView(category);
-        }
-
         [HttpPost]
-        public async Task<IActionResult> EventCreate(Category category)
+        public async Task<IActionResult> EventCreate(Question question)
         {
-            var serviceResult = await categoryService.Create(category);
+            var serviceResult = await questionService.Create(question);
             return Json(serviceResult);
         }
 
         [HttpPost]
-        public async Task<IActionResult> EventUpdate(Category category)
+        public async Task<IActionResult> EventUpdate(Question question)
         {
-            var serviceResult = await categoryService.Update(category);
+            var serviceResult = await questionService.Update(question);
             return Json(serviceResult);
         }
 
         [HttpPost]
-        public async Task<IActionResult> EventDelete(Category category)
+        public async Task<IActionResult> EventDelete(Question question)
         {
-            var serviceResult = await categoryService.Delete(category);
+            var serviceResult = await questionService.Delete(question);
             return Json(serviceResult);
-        }*/
+        }
     }
 }
