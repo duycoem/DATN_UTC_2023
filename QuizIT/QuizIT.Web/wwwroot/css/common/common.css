@@ -30,7 +30,7 @@ a:hover {
 
 .sidebar {
     position: fixed;
-    top: 64px;
+    top: 73px;
     left: 0;
     width: 180px;
     height: 100vh;
@@ -82,13 +82,13 @@ a:hover {
 }
 
 .body {
-    min-height: 100vh;
+    min-height: calc(100vh - 73px);
     background-color: var(--background-body);
 }
 
 .header {
     width: 100%;
-    padding: 1.25rem 1rem;
+    padding: 1rem;
     background-color: #fff;
     box-shadow: 0 0 20px rgb(25 124 207 / 8%);
     z-index: 2;
@@ -101,6 +101,9 @@ a:hover {
 .btn-base {
     outline: none;
     border: none;
+    font-size: 14px;
+    padding: 0.5rem;
+    border-radius: 6px;
 }
 
 #btn-sidebar {
@@ -117,7 +120,7 @@ a:hover {
     }
 
 .content {
-    padding: 1.5rem;
+    padding: 1.8rem 1.5rem;
     margin-left: 180px;
     margin-top: 64px;
     transition: 0.5s;
@@ -130,6 +133,8 @@ a:hover {
 .breadcrumb {
     padding: 0;
     background: none;
+    margin-bottom: 0;
+    margin-top: 20px;
 }
 
 .breadcrumb-item a {
@@ -144,15 +149,35 @@ a:hover {
 .content-card {
     background-color: #fff;
     padding: 1rem;
-    border-radius: 0.75rem;
+    border-radius: 0.5rem;
     width: 100%;
-    height: 200px;
-    border: 1px solid rgb(240, 240, 240, 1);
+    border: 1px solid var(--border-color);
+    margin-top: 1rem;
+    box-shadow: 0 0 11px 5px rgba(113, 113, 113, 0.08)
 }
+
+.form-title {
+    font-size: 14px;
+    margin-bottom: 5px;
+    display: inline-block;
+}
+
+    .form-title.required {
+        position: relative;
+    }
+
+        .form-title.required:before {
+            content: '*';
+            position: absolute;
+            top: 0px;
+            left: 100%;
+            margin-left: 5px;
+            color: red;
+        }
 
 .form-input {
     background-color: #fff;
-    border: 1px solid #e6e6e6;
+    border: 1px solid var(--border-color);
     border-radius: 0.75rem;
     font-size: 14px;
     padding: 0.5rem;
@@ -161,9 +186,111 @@ a:hover {
 }
 
     .form-input:focus {
-        border: 1px solid #e2c636;
+        border: 1px solid var(--secondary-color);
     }
 
+.form-sub-title {
+    color: var(--main-color);
+    font-weight: bold;
+    font-size: 16px;
+    margin-bottom: 20px;
+}
+
+.table th, td {
+    font-size: 14px;
+    border: 1px solid var(--border-color);
+    white-space: nowrap;
+}
+
+    .table th:first-child {
+        width: 10px;
+    }
+
+.table td:nth-child(2) {
+    cursor: pointer;
+}
+
+    .table td:nth-child(2) a::before {
+        content: attr(data-title);
+        font-weight: bold;
+        display: block;
+        height: 0px;
+        overflow: hidden;
+    }
+
+    .table td:nth-child(2) > a {
+        color: black;
+    }
+
+    .table td#btn-modal:hover, .table td:nth-child(2):hover > a {
+        color: var(--main-color);
+        font-weight: bold;
+    }
+
+.pagination {
+    width: 100%;
+    justify-content: end;
+    margin-top: 10px;
+}
+
+    .pagination ul {
+        flex-wrap: wrap;
+    }
+
+        .pagination ul li {
+            margin: 10px 4px;
+            list-style: none;
+        }
+
+            .pagination ul li a {
+                padding: 6px 12px;
+                color: #000;
+                border-radius: 5px;
+                border: 1px solid var(--border-color);
+            }
+
+                .pagination ul li a.active, .pagination ul li a:hover {
+                    background-color: var(--main-color);
+                    color: #fff;
+                }
+
+.table-responsive::-webkit-scrollbar {
+    height: 5px;
+}
+
+/* Track */
+.table-responsive::-webkit-scrollbar-track {
+    background: #bdb8b8;
+}
+
+/* Handle */
+.table-responsive::-webkit-scrollbar-thumb {
+    background: var(--main-color);
+}
+
+    /* Handle on hover */
+    .table-responsive::-webkit-scrollbar-thumb:hover {
+        background: var(--main-color);
+    }
+
+body::-webkit-scrollbar {
+    width: 5px;
+}
+
+/* Track */
+body::-webkit-scrollbar-track {
+    background: #bdb8b8;
+}
+
+/* Handle */
+body::-webkit-scrollbar-thumb {
+    background: var(--main-color);
+}
+
+    /* Handle on hover */
+    body::-webkit-scrollbar-thumb:hover {
+        background: var(--main-color);
+    }
 
 @media (max-width: 768px) {
     .sidebar {

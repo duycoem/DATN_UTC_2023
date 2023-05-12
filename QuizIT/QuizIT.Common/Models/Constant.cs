@@ -6,13 +6,13 @@ namespace QuizIT.Common
 {
     public class Constant
     {
-        public class Role
+        public static class Role
         {
-            public static readonly int ALL = -1;
+            public const int ALL = -1;
 
-            public static readonly int ADMIN = 1;
+            public const int ADMIN = 1;
 
-            public static readonly int CLIENT = 2;
+            public const int CLIENT = 2;
         }
     }
 }

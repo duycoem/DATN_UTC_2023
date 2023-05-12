@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
-namespace QuizIT.Service.Models
+namespace QuizIT.Service.Entities
 {
     public partial class QuizITContext : DbContext
     {
@@ -30,7 +30,7 @@ namespace QuizIT.Service.Models
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-                optionsBuilder.UseSqlServer("Data Source=DESKTOP-2VOJQKK;Database=QuizIT-Test;User Id=admin;Password=Elhplncda1234567(;");
+                optionsBuilder.UseLazyLoadingProxies().UseSqlServer("Data Source=DESKTOP-2VOJQKK;Database=QuizIT-Test;User Id=admin;Password=Elhplncda1234567(;");
             }
         }
 

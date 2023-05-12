@@ -41,6 +41,8 @@ namespace QuizIT.Web
 
             //Đăng ký các service
             services.AddSingleton<IAuthenticateService, AuthenticateService>();
+            services.AddSingleton<ICategoryService, CategoryService>();
+            services.AddSingleton<IQuestionService, QuestionService>();
 
             services.AddMvc(options =>
             {

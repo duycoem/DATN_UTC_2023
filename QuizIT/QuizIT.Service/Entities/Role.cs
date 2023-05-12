@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace QuizIT.Service.Models
+namespace QuizIT.Service.Entities
 {
     public partial class Role
     {

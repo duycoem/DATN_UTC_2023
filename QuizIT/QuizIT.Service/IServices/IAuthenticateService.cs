@@ -1,5 +1,5 @@
 ﻿using QuizIT.Common.Models;
-using QuizIT.Service.Models;
+using QuizIT.Service.Entities;
 using System;
 using System.Collections.Generic;
 using System.Text;

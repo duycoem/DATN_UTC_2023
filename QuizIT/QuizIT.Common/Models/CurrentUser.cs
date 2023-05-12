@@ -34,5 +34,19 @@ namespace QuizIT.Common.Models
             }
             set { }
         }
+
+        public static int Role
+        {
+            get
+            {
+                var claims = HttpHelper.HttpContext.Items["CurrentUser"] as IEnumerable<Claim>;
+                if (!int.TryParse(claims?.Where(x => x.Type == ClaimTypes.Role)?.FirstOrDefault()?.Value, out int uId))
+                {
+                    uId = -1;   //Giá trị khi chưa đăng nhập là -1
+                }
+                return uId;
+            }
+            set { }
+        }
     }
 }

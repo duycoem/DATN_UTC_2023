@@ -9,5 +9,7 @@ namespace QuizIT.Common.Models
         public string ResponseCode { get; set; }
 
         public string ResponseMess { get; set; }
+
+        public int TotalRecord { get; set; }
     }
 }

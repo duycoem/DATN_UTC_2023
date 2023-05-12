@@ -2,8 +2,7 @@
 using QuizIT.Common.Helpers;
 using QuizIT.Common.Models;
 using QuizIT.Service.IServices;
-using QuizIT.Service.Models;
-using System;
+using QuizIT.Service.Entities;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -40,7 +39,6 @@ namespace QuizIT.Service.Services
                     };
                 }
                 resultService.Result.Add(user);
-
             }
             catch
             {

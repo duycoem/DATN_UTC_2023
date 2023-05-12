@@ -32,7 +32,7 @@ hideLoading = function () {
 //#endregion
 
 //#region HÀM LOAD HTML BẰNG AJAX
-loadHtmlByAjax = function (url, selectDivContainer, data = {}, isShowLoading = false, isAppend = false, errorMess = "Có lổi xảy ra khi load html") {
+loadHtmlByAjax = function (url, selectDivContainer, data = {}, isShowLoading = false, isAppend = false, errorMess = "Máy chủ tạm thời không phản hồi, vui lòng thử lại sau") {
     $.ajax({
         url: url,
         type: "POST",
@@ -60,4 +60,44 @@ loadHtmlByAjax = function (url, selectDivContainer, data = {}, isShowLoading = f
         }
     })
 }
+//#endregion
+
+//#region SỰ KIỆN ĐÓNG MỞ SIDEBAR
+$(document).on("click", "#btn-sidebar", function () {
+    $(".sidebar").toggleClass("active");
+});
+//#endregion
+
+//#region SỰ KIỆN CHẶN NHẬP CÁC KÍ TỰ ĐẶC BIỆT VÀO INPUT SEARCH
+$(document).on("keypress", "#form-filter input", function (event) {
+    const keyCodeBanList = [33, 64, 35, 36, 37, 94, 38, 42, 40, 41, 95, 43, 60, 62, 63, 91, 93, 123, 125, 59, 58, 39, 34]
+    //Nếu kí tự nhập nằm trong tập bị cấm
+    if (keyCodeBanList.includes(event.keyCode)) {
+        event.preventDefault();
+    }
+})
+//#endregion
+
+//#region SỰ KIỆN ĐĂNG XUẤT
+$(document).on("click", "#btn-logout", function (event) {
+    $.ajax({
+        url: "/authenticate/eventlogout",
+        type: "POST",
+        beforeSend: function () {
+            showLoading();
+        },
+        success: function () {
+            toastr.success("Hẹn gặp lại", "Thông báo");
+            setTimeout(function () {
+                window.location.href = "/";
+            }, 800);
+        },
+        error: function () {
+            toastr.error("Máy chủ tạm thời không phản hồi, vui lòng thử lại sau", "Thông báo");
+
+        },
+    }).always(function () {
+        hideLoading();
+    })
+});
 //#endregion

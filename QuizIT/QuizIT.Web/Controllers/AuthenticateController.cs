@@ -3,7 +3,8 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using QuizIT.Common.Models;
 using QuizIT.Service.IServices;
-using QuizIT.Service.Models;
+using QuizIT.Service.Entities;
+using QuizIT.Web.Filter;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,12 +23,19 @@ namespace QuizIT.Web.Controllers
         }
 
         [Route("/")]
+        [AuthorizationFilter(IsAuthoriaztion = false)]
         public IActionResult Login()
         {
+            //Nếu đã đăng nhập r
+            if (CurrentUser.Id != -1)
+            {
+                return Redirect("~/bo-de");
+            }
             return View();
         }
 
         [Route("/registry")]
+        [AuthorizationFilter(IsAuthoriaztion = false)]
         public IActionResult Registry()
         {
             return View();
@@ -35,6 +43,7 @@ namespace QuizIT.Web.Controllers
 
         #region CÁC SỰ KIỆN
         [HttpPost]
+        [AuthorizationFilter(IsAuthoriaztion = false)]
         public async Task<IActionResult> EventLogin(User user)
         {
             var resService = authenticateService.Login(user.UserName, user.Password);
@@ -47,6 +56,7 @@ namespace QuizIT.Web.Controllers
         }
 
         [HttpPost]
+        [AuthorizationFilter(IsAuthoriaztion = false)]
         public async Task<IActionResult> EventRegistry(User user)
         {
             var res = await authenticateService.Registry(user);
@@ -76,5 +86,11 @@ namespace QuizIT.Web.Controllers
              );
         }
         #endregion
+
+        [HttpPost]
+        public async Task EventLogout()
+        {
+            await HttpContext.SignOutAsync();
+        }
     }
 }

@@ -3,10 +3,10 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace QuizIT.Web.Controllers
 {
-   
+
     public class ExamController : Controller
     {
-        [Route("/danh-sach-de")]
+        [Route("/bo-de")]
         [AuthorizationFilter]
         public IActionResult Index()
         {
