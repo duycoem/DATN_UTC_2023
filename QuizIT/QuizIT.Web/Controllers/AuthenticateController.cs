@@ -71,7 +71,6 @@ namespace QuizIT.Web.Controllers
                 new Claim (ClaimTypes.NameIdentifier, user.Id.ToString()),
                 new Claim (ClaimTypes.Name, user.FullName),
                 new Claim (ClaimTypes.Role, user.RoleId.ToString()),
-                new Claim ("Avatar", user.Avatar)
             };
 
             var claimsIdentity = new ClaimsIdentity(claims, "Login");
@@ -85,12 +84,13 @@ namespace QuizIT.Web.Controllers
                 }
              );
         }
-        #endregion
 
         [HttpPost]
         public async Task EventLogout()
         {
             await HttpContext.SignOutAsync();
         }
+
+        #endregion
     }
 }

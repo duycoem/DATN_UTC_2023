@@ -18,9 +18,7 @@ namespace QuizIT.Service.Entities
         public string FullName { get; set; }
         public string UserName { get; set; }
         public string Password { get; set; }
-        public string Avatar { get; set; }
         public DateTime CreateAt { get; set; }
-
         public virtual Role Role { get; set; }
         public virtual ICollection<Exam> Exam { get; set; }
         public virtual ICollection<History> History { get; set; }

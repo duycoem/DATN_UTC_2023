@@ -30,10 +30,15 @@
         </div>
     </div>
     <header class="header d-flex justify-content-between align-items-center">
-        <button class="btn-base d-flex align-items-center" id="btn-sidebar">
-            <i class="bx bx-menu"></i>
-        </button>
-        <span>@CurrentUser.Name</span>
+        <div class="w-25">
+            <button class="btn-base d-flex align-items-center" id="btn-sidebar">
+                <i class="bx bx-menu"></i>
+            </button>
+        </div>
+        <div class="w-75">
+            <span>Xin chào, @CurrentUser.Name</span>
+        </div>
+
     </header>
     <div class="body">
         <div class="sidebar">
@@ -57,7 +62,7 @@
                         <i class="bx bx-purchase-tag-alt"></i>
                         <span>Chủ đề</span>
                     </a>
-                    <a href="" class="sidebar-item sidebar-link">
+                    <a href="~/admin/nguoi-dung" class="sidebar-item sidebar-link @(ViewBag.ActivePage == "user" ? "active" : "")">
                         <i class="bx bx-user"></i>
                         <span>Người dùng</span>
                     </a>

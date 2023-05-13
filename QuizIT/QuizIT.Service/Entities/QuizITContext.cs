@@ -182,10 +182,6 @@ namespace QuizIT.Service.Entities
 
             modelBuilder.Entity<User>(entity =>
             {
-                entity.Property(e => e.Avatar)
-                    .IsRequired()
-                    .HasMaxLength(255)
-                    .HasDefaultValueSql("('default_avatar.png')");
 
                 entity.Property(e => e.CreateAt)
                     .HasColumnType("datetime")

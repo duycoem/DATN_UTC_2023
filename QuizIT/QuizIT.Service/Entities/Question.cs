@@ -19,7 +19,7 @@ namespace QuizIT.Service.Entities
         public string AnswerC { get; set; }
         public string AnswerD { get; set; }
         public string AnswerCorrect { get; set; }
-        public DateTime? CreatedAt { get; set; }
+        public DateTime CreatedAt { get; set; }
         public int CreatedBy { get; set; }
 
         public virtual Category Category { get; set; }

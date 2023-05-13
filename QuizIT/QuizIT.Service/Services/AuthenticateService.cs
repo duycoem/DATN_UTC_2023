@@ -5,6 +5,7 @@ using QuizIT.Service.IServices;
 using QuizIT.Service.Entities;
 using System.Linq;
 using System.Threading.Tasks;
+using System;
 
 namespace QuizIT.Service.Services
 {
@@ -40,7 +41,7 @@ namespace QuizIT.Service.Services
                 }
                 resultService.Result.Add(user);
             }
-            catch
+            catch(Exception e)
             {
                 resultService.ResponseCode = ResponseCode.INTERNAL_SERVER_ERROR;
                 resultService.ResponseMess = ResponseMessage.INTERNAL_SERVER_ERROR;

@@ -43,6 +43,8 @@ namespace QuizIT.Web
             services.AddSingleton<IAuthenticateService, AuthenticateService>();
             services.AddSingleton<ICategoryService, CategoryService>();
             services.AddSingleton<IQuestionService, QuestionService>();
+            services.AddSingleton<IRoleService, RoleService>();
+            services.AddSingleton<IUserService, UserService>();
 
             services.AddMvc(options =>
             {

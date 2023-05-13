@@ -98,6 +98,13 @@ a:hover {
     border-bottom: 1px solid #e6edef;
 }
 
+    .header div:nth-child(2) {
+        text-align: right;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
 .btn-base {
     outline: none;
     border: none;

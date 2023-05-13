@@ -15,7 +15,7 @@ namespace QuizIT.Service.Services
         private readonly string CREATE_SUCCESS = "Thêm câu hỏi thành công";
         private readonly string UPDATE_SUCCESS = "Cập nhật câu hỏi thành công";
         private readonly string DELETE_SUCCESS = "Xoá câu hỏi thành công";
-        private readonly string DELETE_FAILED = "Đã có bộ đề/câu hỏi thuộc câu hỏi này, không thể xoá";
+        private readonly string DELETE_FAILED = "Đã có bộ đề thuộc câu hỏi này, không thể xoá";
         private readonly string NOT_FOUND = "Câu hỏi không tồn tại";
 
         public ServiceResult<Question> GetPage(FilterQuestion filter)
@@ -26,6 +26,9 @@ namespace QuizIT.Service.Services
             };
             try
             {
+                if (string.IsNullOrEmpty(filter.Name)) {
+                    filter.Name = string.Empty;
+                }
                 serviceResult.Result = dbContext.Question
                     .Where(q =>
                         q.Content.ToLower().Contains(filter.Name.ToLower()) &&
