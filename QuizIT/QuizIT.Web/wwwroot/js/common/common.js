@@ -40,7 +40,7 @@ loadHtmlByAjax = function (url, selectDivContainer, data = {}, isShowLoading = f
         dataType: "html",
         beforeSend: function () {
             if (isShowLoading == true) {
-                ShowLoading();
+                showLoading();
             }
         },
         success: function (html) {
@@ -56,7 +56,7 @@ loadHtmlByAjax = function (url, selectDivContainer, data = {}, isShowLoading = f
         }
     }).always(function () {
         if (isShowLoading == true) {
-            HideLoading();
+            hideLoading();
         }
     })
 }

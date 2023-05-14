@@ -203,36 +203,43 @@ a:hover {
     margin-bottom: 20px;
 }
 
-.table th, td {
-    font-size: 14px;
-    border: 1px solid var(--border-color);
-    white-space: nowrap;
+.table {
+    margin-bottom: 5px;
 }
 
-    .table th:first-child {
-        width: 10px;
-    }
-
-.table td:nth-child(2) {
-    cursor: pointer;
-}
-
-    .table td:nth-child(2) a::before {
-        content: attr(data-title);
-        font-weight: bold;
-        display: block;
-        height: 0px;
+    .table th, td {
+        font-size: 14px;
+        border: 1px solid var(--border-color);
+        white-space: nowrap;
+        max-width: 100px;
+        text-overflow: ellipsis;
         overflow: hidden;
     }
 
-    .table td:nth-child(2) > a {
-        color: black;
+        .table th:first-child {
+            width: 10px;
+        }
+
+    .table td:nth-child(2) {
+        cursor: pointer;
     }
 
-    .table td#btn-modal:hover, .table td:nth-child(2):hover > a {
-        color: var(--main-color);
-        font-weight: bold;
-    }
+        .table td:nth-child(2) a::before {
+            content: attr(data-title);
+            font-weight: bold;
+            display: block;
+            height: 0px;
+            overflow: hidden;
+        }
+
+        .table td:nth-child(2) > a {
+            color: black;
+        }
+
+        .table td#btn-modal:hover, .table td:nth-child(2):hover > a {
+            color: var(--main-color);
+            font-weight: bold;
+        }
 
 .pagination {
     width: 100%;
@@ -261,6 +268,20 @@ a:hover {
                     color: #fff;
                 }
 
+.table-responsive.ten-item {
+    max-height: 569px;
+    overflow-y: auto;
+}
+
+.table-responsive.eight-item {
+    max-height: 448px;
+    overflow-y: auto;
+}
+
+    .table-responsive.ten-item::-webkit-scrollbar, .table-responsive.eight-item::-webkit-scrollbar {
+        width: 5px;
+    }
+
 .table-responsive::-webkit-scrollbar {
     height: 5px;
 }
@@ -281,7 +302,7 @@ a:hover {
     }
 
 body::-webkit-scrollbar {
-    width: 5px;
+    width: 7px;
 }
 
 /* Track */
@@ -298,6 +319,18 @@ body::-webkit-scrollbar-thumb {
     body::-webkit-scrollbar-thumb:hover {
         background: var(--main-color);
     }
+
+.btn-delete-question {
+    cursor: pointer;
+}
+
+#table-question tbody tr {
+    cursor: pointer;
+}
+
+.table-hover tbody tr.selected {
+    background-color: rgba(0,0,0,.075);
+}
 
 @media (max-width: 768px) {
     .sidebar {

@@ -60,7 +60,7 @@ namespace QuizIT.Web.Areas.Admin.Controllers
             });
             //Gọi service bị lỗi
             if (categoryServiceResult.ResponseCode != ResponseCode.SUCCESS)
-                
+
             {
                 return Redirect("~/internal-server-error");
             }
@@ -115,12 +115,12 @@ namespace QuizIT.Web.Areas.Admin.Controllers
                             questionLst.Add(new Question
                             {
                                 CategoryId = categoryId,
-                                Content = reader.GetValue(0).ToString(),
-                                AnswerA = reader.GetValue(1).ToString(),
-                                AnswerB = reader.GetValue(2).ToString(),
-                                AnswerC = reader.GetValue(3).ToString(),
-                                AnswerD = reader.GetValue(4).ToString(),
-                                AnswerCorrect = reader.GetValue(5).ToString(),
+                                Content = reader.GetValue(0).ToString().Trim(),
+                                AnswerA = reader.GetValue(1).ToString().Trim(),
+                                AnswerB = reader.GetValue(2).ToString().Trim(),
+                                AnswerC = reader.GetValue(3).ToString().Trim(),
+                                AnswerD = reader.GetValue(4).ToString().Trim(),
+                                AnswerCorrect = reader.GetValue(5).ToString().Trim(),
                                 CreatedBy = CurrentUser.Id
                             });
                         }
