@@ -19,7 +19,7 @@ namespace QuizIT.Service.Entities
         public virtual DbSet<Exam> Exam { get; set; }
         public virtual DbSet<ExamDetail> ExamDetail { get; set; }
         public virtual DbSet<History> History { get; set; }
-        public virtual DbSet<HistoryExam> HistoryExam { get; set; }
+        public virtual DbSet<HistoryDetail> HistoryDetail { get; set; }
         public virtual DbSet<Question> Question { get; set; }
         public virtual DbSet<Rank> Rank { get; set; }
         public virtual DbSet<Role> Role { get; set; }
@@ -100,7 +100,7 @@ namespace QuizIT.Service.Entities
                     .HasConstraintName("FK__History__UserId__4F7CD00D");
             });
 
-            modelBuilder.Entity<HistoryExam>(entity =>
+            modelBuilder.Entity<HistoryDetail>(entity =>
             {
                 entity.Property(e => e.AnswerSelect)
                     .IsRequired()
@@ -108,13 +108,13 @@ namespace QuizIT.Service.Entities
                     .IsUnicode(false);
 
                 entity.HasOne(d => d.History)
-                    .WithMany(p => p.HistoryExam)
+                    .WithMany(p => p.HistoryDetail)
                     .HasForeignKey(d => d.HistoryId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK__HistoryEx__Histo__5EBF139D");
 
                 entity.HasOne(d => d.Question)
-                    .WithMany(p => p.HistoryExam)
+                    .WithMany(p => p.HistoryDetail)
                     .HasForeignKey(d => d.QuestionId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK__HistoryEx__Quest__5FB337D6");

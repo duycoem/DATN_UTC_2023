@@ -7,7 +7,7 @@ namespace QuizIT.Service.Entities
     {
         public History()
         {
-            HistoryExam = new HashSet<HistoryExam>();
+            HistoryDetail = new HashSet<HistoryDetail>();
         }
 
         public int Id { get; set; }
@@ -19,6 +19,6 @@ namespace QuizIT.Service.Entities
 
         public virtual Exam Exam { get; set; }
         public virtual User User { get; set; }
-        public virtual ICollection<HistoryExam> HistoryExam { get; set; }
+        public virtual ICollection<HistoryDetail> HistoryDetail { get; set; }
     }
 }

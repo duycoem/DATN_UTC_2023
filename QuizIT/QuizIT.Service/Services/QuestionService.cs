@@ -15,7 +15,7 @@ namespace QuizIT.Service.Services
         private readonly string CREATE_SUCCESS = "Thêm câu hỏi thành công";
         private readonly string UPDATE_SUCCESS = "Cập nhật câu hỏi thành công";
         private readonly string DELETE_SUCCESS = "Xoá câu hỏi thành công";
-        private readonly string DELETE_FAILED = "Câu hỏi đã thuộc 1 bộ đề hoặc 1 lịch sử làm đề, không thể xoá";
+        private readonly string DELETE_FAILED = "Câu hỏi đã thuộc 1 bộ đề hoặc nằm trong lịch sử làm đề, không thể xoá";
         private readonly string NOT_FOUND = "Câu hỏi không tồn tại";
 
         public ServiceResult<Question> GetPage(FilterQuestion filter)

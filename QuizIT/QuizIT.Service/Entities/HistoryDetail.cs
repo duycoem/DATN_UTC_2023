@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace QuizIT.Service.Entities
 {
-    public partial class HistoryExam
+    public partial class HistoryDetail
     {
         public int Id { get; set; }
         public int HistoryId { get; set; }
