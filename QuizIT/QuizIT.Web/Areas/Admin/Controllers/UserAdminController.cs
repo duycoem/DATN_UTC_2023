@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using QuizIT.Common.Helpers;
 using QuizIT.Common.Models;
+using QuizIT.Service.Entities;
 using QuizIT.Service.IServices;
 using QuizIT.Service.Models;
 using System;
@@ -23,19 +25,65 @@ namespace QuizIT.Web.Areas.Admin.Controllers
         }
 
         [Route("/admin/nguoi-dung")]
-        public IActionResult Index(FilterUser filterUser)
+        public IActionResult Index(FilterUser filter)
         {
             ViewBag.ActivePage = "user";
-            //Lấy danh sách role
+            //Lấy tất cả role
             var roleServiceResult = roleService.GetAll();
+            //Lấy danh sách người dùng
+            var userServiceResult = userService.GetPage(filter);
             //Gọi service bị lỗi
-            if (roleServiceResult.ResponseCode != ResponseCode.SUCCESS)
+            if (roleServiceResult.ResponseCode != ResponseCode.SUCCESS ||
+                userServiceResult.ResponseCode != ResponseCode.SUCCESS)
             {
                 return Redirect("~/internal-server-error");
             }
+            ViewBag.PaginationModel = PaginationHelper.GetPaginationModel(filter.PageNumber, filter.PageSize, userServiceResult.TotalRecord);
             ViewBag.RoleLst = roleServiceResult.Result;
-            ViewBag.Filter = filterUser;
-            return View();
+            ViewBag.Filter = filter;
+            return View(userServiceResult.Result);
+        }
+
+        [HttpPost]
+        public IActionResult ModalUser(int action, int userId)
+        {
+            //Lấy tất cả role
+            var roleServiceResult = roleService.GetAll();
+            if (roleServiceResult.ResponseCode != ResponseCode.SUCCESS
+             )
+            {
+                return Redirect("~/internal-server-error");
+            }
+            //Gọi service để lấy thông tin
+            User user = new User();
+            if (action == MODAL_ACTION_UPDATE)
+            {
+                var userServiceResult = userService.GetById(userId);
+                //Lỗi thì văng exception để ajax xử lý
+                if (userServiceResult.ResponseCode != ResponseCode.SUCCESS)
+                {
+                    throw new Exception();
+                }
+                user = userServiceResult.Result.FirstOrDefault();
+            }
+            ViewBag.RoleLst = roleServiceResult.Result;
+            ViewBag.Action = action;
+            ViewBag.UserId = userId;
+            return PartialView(user);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> EventCreate(User user)
+        {
+            var serviceResult = await userService.Create(user);
+            return Json(serviceResult);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> EventUpdate(User user)
+        {
+            var serviceResult = await userService.Update(user);
+            return Json(serviceResult);
         }
     }
 }

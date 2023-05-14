@@ -52,6 +52,8 @@ namespace QuizIT.Web.Controllers
                 user = resService.Result.FirstOrDefault();
                 await SetCookieAuthenticate(user);
             }
+            //Reset lại kết quả để tránh gửi 1 object bị đệ quy xuống js
+            resService.Result = null;
             return Json(resService);
         }
 

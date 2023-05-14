@@ -15,7 +15,7 @@ namespace QuizIT.Service.Services
         private readonly string CREATE_SUCCESS = "Thêm câu hỏi thành công";
         private readonly string UPDATE_SUCCESS = "Cập nhật câu hỏi thành công";
         private readonly string DELETE_SUCCESS = "Xoá câu hỏi thành công";
-        private readonly string DELETE_FAILED = "Đã có bộ đề thuộc câu hỏi này, không thể xoá";
+        private readonly string DELETE_FAILED = "Câu hỏi đã thuộc 1 bộ đề hoặc 1 lịch sử làm đề, không thể xoá";
         private readonly string NOT_FOUND = "Câu hỏi không tồn tại";
 
         public ServiceResult<Question> GetPage(FilterQuestion filter)
@@ -174,7 +174,7 @@ namespace QuizIT.Service.Services
             };
             try
             {
-                //Kiểm tra xem câu hỏi đã thuộc bộ đề nào chưa 
+                //Kiểm tra xem câu hỏi đã thuộc bộ đề/lịch sử làm đề nào chưa nào chưa 
                 if (dbContext.ExamDetail.FirstOrDefault(q => q.QuestionId == question.Id) != null)
                 {
                     serviceResult.ResponseCode = ResponseCode.BAD_REQUEST;

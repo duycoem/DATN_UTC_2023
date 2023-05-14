@@ -16,7 +16,7 @@ namespace QuizIT.Web.Areas.Admin.Controllers
         private const int MODAL_ACTION_UPDATE = 2;
         private readonly ICategoryService categoryService;
 
-        public CategoryAdminController(ICategoryService categoryService)
+        public CategoryAdminController(ICategoryService categoryService, IAuthenticateService authenticateService)
         {
             this.categoryService = categoryService;
         }

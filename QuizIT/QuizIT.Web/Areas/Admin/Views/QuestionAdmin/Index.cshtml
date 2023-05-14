@@ -31,10 +31,10 @@
             <form id="form-filter">
                 <div class="row">
                     <div class="col-md-3 col-12 mb-3">
-                        <input type="text" class="form-input" placeholder="Tên chủ đề" value="@filter.Name" name="Name" />
+                        <input type="text" class="form-input" placeholder="Tên chủ đề" value="@filter.Name" />
                     </div>
                     <div class="col-md-3 col-12 mb-3">
-                        <select class="form-input" name="Category">
+                        <select class="form-input">
                             <option value="-1" selected="@(-1 == filter.Category ? true : false)">Chủ đề: Tất cả</option>
                             @foreach (var category in categoryLst)
                             {

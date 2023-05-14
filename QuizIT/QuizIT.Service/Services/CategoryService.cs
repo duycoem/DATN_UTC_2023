@@ -14,7 +14,7 @@ namespace QuizIT.Service.Services
         private readonly string CREATE_SUCCESS = "Thêm chủ đề thành công";
         private readonly string UPDATE_SUCCESS = "Cập nhật chủ đề thành công";
         private readonly string DELETE_SUCCESS = "Xoá chủ đề thành công";
-        private readonly string DELETE_FAILED = "Đã có bộ đề/câu hỏi thuộc chủ đề này, không thể xoá";
+        private readonly string DELETE_FAILED = "Đã có bộ đề hoặc câu hỏi thuộc chủ đề này, không thể xoá";
         private readonly string EXISTS_CATEGORY_NAME = "Tên chủ đề đã trùng, vui lòng nhập tên khác";
         private readonly string NOT_FOUND = "Chủ đề không tồn tại";
 

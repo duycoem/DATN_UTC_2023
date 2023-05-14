@@ -6,6 +6,7 @@ using QuizIT.Service.Entities;
 using System.Linq;
 using System.Threading.Tasks;
 using System;
+using Microsoft.EntityFrameworkCore;
 
 namespace QuizIT.Service.Services
 {
@@ -27,10 +28,10 @@ namespace QuizIT.Service.Services
             try
             {
                 User user = dbContext.User
-                    .FirstOrDefault(u =>
-                        u.UserName.ToLower() == userName.ToLower() &&
-                        u.Password == MD5Helper.Encode(password)
-                     );
+                     .FirstOrDefault(u =>
+                         u.UserName.ToLower() == userName.ToLower() &&
+                         u.Password == MD5Helper.Encode(password)
+                      );
                 if (user == null)
                 {
                     return new ServiceResult<User>
@@ -41,7 +42,7 @@ namespace QuizIT.Service.Services
                 }
                 resultService.Result.Add(user);
             }
-            catch(Exception e)
+            catch
             {
                 resultService.ResponseCode = ResponseCode.INTERNAL_SERVER_ERROR;
                 resultService.ResponseMess = ResponseMessage.INTERNAL_SERVER_ERROR;
