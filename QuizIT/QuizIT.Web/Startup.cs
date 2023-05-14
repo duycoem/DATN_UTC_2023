@@ -45,6 +45,7 @@ namespace QuizIT.Web
             services.AddTransient<IQuestionService, QuestionService>();
             services.AddTransient<IRoleService, RoleService>();
             services.AddTransient<IUserService, UserService>();
+            services.AddTransient<IExamService, ExamService>();
 
             services.AddMvc(options =>
             {
