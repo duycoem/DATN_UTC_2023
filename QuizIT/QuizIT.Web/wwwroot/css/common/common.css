@@ -211,35 +211,44 @@ a:hover {
         font-size: 14px;
         border: 1px solid var(--border-color);
         white-space: nowrap;
-        max-width: 100px;
-        text-overflow: ellipsis;
+    }
+
+.mx-500 {
+    max-width: 500px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+.mx-200 {
+    max-width: 200px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+.table th:first-child {
+    width: 10px;
+}
+
+.table td:nth-child(2) {
+    cursor: pointer;
+}
+
+    .table td:nth-child(2) a::before {
+        content: attr(data-title);
+        font-weight: bold;
+        display: block;
+        height: 0px;
         overflow: hidden;
     }
 
-        .table th:first-child {
-            width: 10px;
-        }
-
-    .table td:nth-child(2) {
-        cursor: pointer;
+    .table td:nth-child(2) > a {
+        color: black;
     }
 
-        .table td:nth-child(2) a::before {
-            content: attr(data-title);
-            font-weight: bold;
-            display: block;
-            height: 0px;
-            overflow: hidden;
-        }
-
-        .table td:nth-child(2) > a {
-            color: black;
-        }
-
-        .table td#btn-modal:hover, .table td:nth-child(2):hover > a {
-            color: var(--main-color);
-            font-weight: bold;
-        }
+    .table td#btn-modal:hover, .table td:nth-child(2):hover > a {
+        color: var(--main-color);
+        font-weight: bold;
+    }
 
 .pagination {
     width: 100%;
@@ -279,11 +288,11 @@ a:hover {
 }
 
     .table-responsive.ten-item::-webkit-scrollbar, .table-responsive.eight-item::-webkit-scrollbar {
-        width: 5px;
+        width: 7px;
     }
 
 .table-responsive::-webkit-scrollbar {
-    height: 5px;
+    height: 7px;
 }
 
 /* Track */
@@ -324,12 +333,16 @@ body::-webkit-scrollbar-thumb {
     cursor: pointer;
 }
 
-#table-question tbody tr {
+#table-question tbody tr, #table-question-selected tbody tr {
     cursor: pointer;
 }
 
 .table-hover tbody tr.selected {
     background-color: rgba(0,0,0,.075);
+}
+
+#table-question-selected td:nth-child(2), #table-question-exam td:nth-child(2) {
+    cursor: text !important;
 }
 
 @media (max-width: 768px) {

@@ -40,11 +40,11 @@ namespace QuizIT.Web
             services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
 
             //Đăng ký các service
-            services.AddSingleton<IAuthenticateService, AuthenticateService>();
-            services.AddSingleton<ICategoryService, CategoryService>();
-            services.AddSingleton<IQuestionService, QuestionService>();
-            services.AddSingleton<IRoleService, RoleService>();
-            services.AddSingleton<IUserService, UserService>();
+            services.AddTransient<IAuthenticateService, AuthenticateService>();
+            services.AddTransient<ICategoryService, CategoryService>();
+            services.AddTransient<IQuestionService, QuestionService>();
+            services.AddTransient<IRoleService, RoleService>();
+            services.AddTransient<IUserService, UserService>();
 
             services.AddMvc(options =>
             {

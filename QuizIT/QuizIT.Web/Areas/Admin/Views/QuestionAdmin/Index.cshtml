@@ -78,14 +78,14 @@
                     {
                         <tr>
                             <td>@((filter.PageNumber - 1)*filter.PageSize + index)</td>
-                            <td>
+                            <td class="mx-500">
                                 <a href="~/admin/cau-hoi/chi-tiet/@question.Id" data-title="@question.Content.Trim()">@question.Content.Trim()</a>
                             </td>
                             <td>@question.Category.CategoryName.Trim()</td>
-                            <td>@question.AnswerA.Trim()</td>
-                            <td>@question.AnswerB.Trim()</td>
-                            <td>@question.AnswerC.Trim()</td>
-                            <td>@question.AnswerD.Trim()</td>
+                            <td class="mx-500">@question.AnswerA.Trim()</td>
+                            <td class="mx-500">@question.AnswerB.Trim()</td>
+                            <td class="mx-500">@question.AnswerC.Trim()</td>
+                            <td class="mx-500">@question.AnswerD.Trim()</td>
                             <td>@question.AnswerCorrect.Trim()</td>
                         </tr>
                         index++;

@@ -46,7 +46,7 @@ namespace QuizIT.Web.Controllers
         [AuthorizationFilter(IsAuthoriaztion = false)]
         public async Task<IActionResult> EventLogin(User user)
         {
-            var resService = authenticateService.Login(user.UserName, user.Password);
+            var resService = await authenticateService.Login(user.UserName, user.Password);
             if (resService.ResponseCode == ResponseCode.SUCCESS)
             {
                 user = resService.Result.FirstOrDefault();

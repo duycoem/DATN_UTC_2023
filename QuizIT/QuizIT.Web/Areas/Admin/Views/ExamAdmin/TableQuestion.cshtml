@@ -20,12 +20,12 @@
         @foreach (var question in Model)
         {
             <tr data-target="@question.Id">
-                <td>@question.Content.Trim()</td>
+                <td class="mx-200" data-toggle="tooltip" title="@question.Content.Trim()">@question.Content.Trim()</td>
                 <td>@question.Category.CategoryName.Trim()</td>
-                <td>@question.AnswerA.Trim()</td>
-                <td>@question.AnswerB.Trim()</td>
-                <td>@question.AnswerC.Trim()</td>
-                <td>@question.AnswerD.Trim()</td>
+                <td class="mx-200" data-toggle="tooltip" title="@question.AnswerA.Trim()">@question.AnswerA.Trim()</td>
+                <td class="mx-200" data-toggle="tooltip" title="@question.AnswerB.Trim()">@question.AnswerB.Trim()</td>
+                <td class="mx-200" data-toggle="tooltip" title="@question.AnswerC.Trim()">@question.AnswerC.Trim()</td>
+                <td class="mx-200" data-toggle="tooltip" title="@question.AnswerD.Trim()">@question.AnswerD.Trim()</td>
                 <td>@question.AnswerCorrect.Trim()</td>
                 @*<td>
                         <i class="bx bx-trash text-danger btn-delete-question"></i>

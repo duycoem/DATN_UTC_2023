@@ -7,7 +7,6 @@ $(document).ready(function () {
 
     //#region SỰ KIỆN CLICK MỞ MODAL CHỌN CÂU HỎI
     $(document).on("click", "#btn-modal-question", function () {
-        console.log(isOpenModalFirst)
         //Chỉ gọi ajax vào lần đầu tiên
         if (isOpenModalFirst == true) {
             loadTableQuestion({}, true);
@@ -31,7 +30,7 @@ $(document).ready(function () {
             if (selectedQuestionIdLst.length == 0) {
                 //Setup table html
                 $("#table-question-selected").html(
-                    "<table class='table'>" +
+                    "<table class='table table-hover'>" +
                     "   <thead>" +
                     "       <tr>" +
                     "           <th>Câu hỏi</th>" +
@@ -48,11 +47,13 @@ $(document).ready(function () {
                     "   </tbody>" +
                     "</table>");
             }
+            //Clone ra tr mới
+            const newTr = $(this).clone();
             //Đánh dấu câu hỏi đã được chọn
             $(this).addClass("selected");
             //Thêm html icon xoá
-            var newTrHtml = `<tr data-target='${questionId}'>` + $(this).html() + "<td><i class='bx bx-trash text-danger btn-delete-question'></i></td>" + "</tr>";
-            $("#table-question-selected tbody").append(newTrHtml);
+            newTr.append("<td><i class='bx bx-trash text-danger btn-delete-question'></i></td>");
+            $("#table-question-selected tbody").append(newTr.prop('outerHTML'));
             //Thêm id câu hỏi vào selectedQuestionIdLst
             selectedQuestionIdLst.push(questionId);
         }
@@ -67,133 +68,78 @@ $(document).ready(function () {
         const questionId = parseInt(trElement.attr("data-target"));
         //Xoá html trong table question đã chọn
         trElement.remove();
+        //Trường hợp xoá hết các câu hỏi đã chọn
+        if (selectedQuestionIdLst.length == 1) {
+            $("#table-question-selected").html("<p class='text-center'>Không có dữ liệu</p>");
+        }
         //Bỏ đánh dấu question trong table danh sách question
         $(`#table-question tbody tr[data-target=${questionId}]`).removeClass("selected");
         //Xoá id câu hỏi ở selectedQuestionIdLst
         selectedQuestionIdLst.splice(selectedQuestionIdLst.indexOf(questionId), 1);
-        console.log(selectedQuestionIdLst);
-
     });
     //#endregion
 
-    //#region SỰ KIỆN IMPORT FILE EXCEL
-    $(document).on("click", "#btn-import", function () {
-        const formData = new FormData();
-        const fileExcel = $("#input-excel").get(0).files[0];
-        if (fileExcel == undefined) {
-            toastr.error("Vui lòng chọn file", "Thông báo");
-        }
-        else {
-            const fileType = fileExcel.name.split('.')[1];
-            const categoryId = $("#select-category").val();
-            if (fileType != 'xlsx' && fileType != 'XLSX') {
-                toastr.error("Vui lòng chọn file excel đuôi .xlsx", "Thông báo");
-            }
-            else {
-                formData.append("categoryId", categoryId);
-                formData.append("fileExcel", fileExcel);
-                $.ajax({
-                    url: "/admin/questionadmin/eventimportexcel",
-                    type: "POST",
-                    data: formData,
-                    contentType: false,
-                    processData: false,
-                    dataType: "json",
-                    beforeSend: function () {
-                        showLoading();
-                    },
-                    success: function (response) {
-                        if (response.responseCode == "200") {
-                            toastr.success(response.responseMess, "Thông báo");
-                            setTimeout(function () {
-                                location.reload();
-                            }, 800);
-                        }
-                        else {
-                            toastr.error(response.responseMess, "Thông báo");
-                        }
-                    },
-                    error: function () {
-                        toastr.error("Máy chủ tạm thời không phản hồi, vui lòng thử lại sau", "Thông báo");
-
-                    },
-                }).always(function () {
-                    hideLoading();
-                });
-            }
-        }
-
-    });
-    //#endregion
-
-    //#region SỰ KIỆN TÌM KIẾM CÂU HỎI
-    $(document).on("submit", "#form-filter", function () {
+    //#region SỰ KIỆN TÌM KIẾM QUESTION Ở MODAL
+    $(document).on("submit", "#form-filter-question", function () {
         const name = $("input", this).val();
-        const categoryId = $("select", this).val();
-        if (categoryId == -1) {
-            if (name == "") {
-                window.location.href = `/admin/cau-hoi`;
-            }
-            else {
-                window.location.href = `/admin/cau-hoi?name=${name}`;
-            }
-        }
-        else {
-            if (name == "") {
-                window.location.href = `/admin/cau-hoi?category=${categoryId}`;
-            }
-            else {
-                window.location.href = `/admin/cau-hoi?category=${categoryId}&name=${name}`;
-            }
-        }
-
+        const category = $("select", this).val();
+        //load lại dữ liệu
+        loadTableQuestion({ name: name, category: category }, true);
         return false;
     });
     //#endregion
 
-    //#region SỰ KIỆN THÊM CÂU HỎI
-    $(document).on("click", "#btn-create", function () {
-        const question = $("#form-question").serializeObject();
-        //Loại bỏ dấu cách thừa
-        question.Content = question.Content.trim()
-        question.AnswerA = question.AnswerA.trim()
-        question.AnswerB = question.AnswerB.trim()
-        question.AnswerC = question.AnswerC.trim()
-        question.AnswerD = question.AnswerD.trim()
-        if (!isValidQuestion(question)) {
-            toastr.error("Chưa nhập đủ thông tin", "Thông báo");
+    //#region SỰ KIỆN ẤN XÁC NHẬN CHỌN CÁC CÂU HỎI
+    $(document).on("click", "#btn-save-detail", function () {
+        //Test
+        console.log(selectedQuestionIdLst);
+        $("#table-question-selected tbody tr").each(function () {
+            console.log($(this).attr("data-target"));
+        })
+        //Nếu không có question nào được chọn
+        if (selectedQuestionIdLst.length == 0) {
+            $("#table-question-exam").html("<p class='text-center'>Không có dữ liệu</p>");
         }
         else {
-
-            $.ajax({
-                url: "/admin/questionadmin/eventcreate",
-                type: "POST",
-                data: {
-                    question: question,
-                },
-                dataType: "json",
-                beforeSend: function () {
-                    showLoading();
-                },
-                success: function (response) {
-                    if (response.responseCode == "200") {
-                        toastr.success(response.responseMess, "Thông báo");
-                        setTimeout(function () {
-                            window.location.href = "/admin/cau-hoi";
-                        }, 800);
-                    }
-                    else {
-                        toastr.error(response.responseMess, "Thông báo");
-                    }
-                },
-                error: function () {
-                    toastr.error("Máy chủ tạm thời không phản hồi, vui lòng thử lại sau", "Thông báo");
-
-                },
-            }).always(function () {
-                hideLoading();
+            //Duyệt html các question đã được chọn
+            //Setup table html
+            $("#table-question-exam").html(
+                "<table class='table'>" +
+                "   <thead>" +
+                "       <tr>" +
+                "           <th>STT</th>" +
+                "           <th>Câu hỏi</th>" +
+                "           <th>Chủ đề</th>" +
+                "           <th>Đáp án A</th>" +
+                "           <th>Đáp án B</th>" +
+                "           <th>Đáp án C</th>" +
+                "           <th>Đáp án D</th>" +
+                "           <th>Đáp án đúng</th>" +
+                "       </tr>" +
+                "   </thead>" +
+                "   <tbody>" +
+                "   </tbody>" +
+                "</table>");
+            let html = ""
+            $("#table-question-selected tbody tr").each(function (index) {
+                var newTrElement = $(this).clone();
+                //Loại bỏ cột icon xoá
+                newTrElement.find("td:last-child").remove();
+                newTrElement.html(`<td>${index + 1}</td>` + newTrElement.html());
+                html += newTrElement.prop('outerHTML');
             });
+            $("#table-question-exam tbody").html(html);
         }
+        //Đóng modal
+        $(".close").trigger("click");
+
+    });
+    //#endregion
+
+    //#region SỰ KIỆN THÊM BỘ ĐỀ
+    $(document).on("click", "#btn-create", function () {
+        const exam = $("#form-question").serializeObject();
+        console.log(exam);
     });
     //#endregion
 
@@ -280,7 +226,7 @@ $(document).ready(function () {
 });
 
 
-isValidQuestion = function (question) {
+isValidExam = function (exam) {
     if (question.Content == "" || question.AnswerA == "" || question.AnswerB == "" || question.AnswerC == ""
         || question.AnswerD == "") {
         return false;
@@ -310,9 +256,16 @@ loadTableQuestion = function (data = {}, isShowLoading = false) {
             }
         },
         success: function (html) {
-            $("#table-question").html(html);
-            //Đánh dấu lại các question trong danh sách question mà đã được chọn
-            markQuestionSelected();
+            //Có dữ liệu trả về
+            if (html.includes("</td>")) {
+                $("#table-question").html(html);
+                //Đánh dấu lại các question trong danh sách question mà đã được chọn
+                markQuestionSelected();
+            }
+            //Không có dữ liệu trả về
+            else {
+                $("#table-question").html("<p class='text-center'>Không có dữ liệu</p>");
+            }
         },
         error: function () {
             toastr.error("Máy chủ tạm thời không phản hồi, vui lòng thử lại sau", "Thông báo")

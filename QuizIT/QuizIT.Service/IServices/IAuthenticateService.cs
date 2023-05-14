@@ -9,7 +9,7 @@ namespace QuizIT.Service.IServices
 {
     public interface IAuthenticateService
     {
-        ServiceResult<User> Login(string userName, string password);
+        Task<ServiceResult<User>> Login(string userName, string password);
 
         Task<ServiceResult<string>> Registry(User user);
     }

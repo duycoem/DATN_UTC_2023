@@ -18,7 +18,7 @@ namespace QuizIT.Service.Services
         private readonly string REGISTRY_SUCCESS_MESS = "Đăng ký thành công";
         private readonly string REGISTRY_EXISTS_USER_NAME = "Tên đăng nhập đã bị trùng, vui lòng nhập tên đăng nhập khác";
 
-        public ServiceResult<User> Login(string userName, string password)
+        public async Task<ServiceResult<User>> Login(string userName, string password)
         {
             ServiceResult<User> resultService = new ServiceResult<User>
             {
@@ -27,8 +27,8 @@ namespace QuizIT.Service.Services
             };
             try
             {
-                User user = dbContext.User
-                     .FirstOrDefault(u =>
+                User user = await dbContext.User
+                     .FirstOrDefaultAsync(u =>
                          u.UserName.ToLower() == userName.ToLower() &&
                          u.Password == MD5Helper.Encode(password)
                       );

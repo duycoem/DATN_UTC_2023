@@ -10,7 +10,7 @@ namespace QuizIT.Service.Models
         public string Name { get; set; } = string.Empty;
         public int Role { get; set; } = ALL;
         public int PageNumber { get; set; } = 1;
-        public int PageSize { get; set; } = 20;
+        public int PageSize { get; set; } = 10;
 
         public string GetQueryString(int pageNumber, string name, int role)
         {
