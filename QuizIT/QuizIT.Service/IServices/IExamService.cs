@@ -9,6 +9,8 @@ namespace QuizIT.Service.IServices
     public interface IExamService
     {
         ServiceResult<Exam> GetPage(FilterExam filter);
+        ServiceResult<Exam> GetById(int examdId);
         Task<ServiceResult<string>> Create(Exam exam, List<int> questionIdLst);
+        Task<ServiceResult<string>> Update(Exam examNew, List<int> questionIdNewLst);
     }
 }

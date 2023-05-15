@@ -1,9 +1,8 @@
-﻿var selectedQuestionIdLst = [];
+﻿selectedQuestionIdLst = [];
 var isOpenModalFirst = true;
+var isUpdateFirst = true;
 $(document).ready(function () {
 
-    //Lưu lại id của những câu hỏi đã được chọn
-    updateSelectedQuestionIdLst();
 
     //#region SỰ KIỆN TÌM KIẾM BỘ ĐỀ
     $(document).on("submit", "#form-filter", function () {
@@ -32,11 +31,8 @@ $(document).ready(function () {
 
     //#region SỰ KIỆN CLICK MỞ MODAL CHỌN CÂU HỎI
     $(document).on("click", "#btn-modal-question", function () {
-        //Chỉ gọi ajax vào lần đầu tiên
-        if (isOpenModalFirst == true) {
-            loadTableQuestion({}, true);
-            isOpenModalFirst = false;
-        }
+        //Lấy ra id của các câu hỏi đã chọn và đánh dấu giao diện
+        setSelectedQuestionIdLst();
     });
     //#endregion
 
@@ -185,25 +181,31 @@ $(document).ready(function () {
     });
     //#endregion
 
-    //#region SỰ KIỆN SỬA CÂU HỎI
+    //#region SỰ KIỆN SỬA BỘ ĐỀ
     $(document).on("click", "#btn-update", function () {
-        const question = $("#form-question").serializeObject();
-        //Loại bỏ dấu cách thừa
-        question.Content = question.Content.trim()
-        question.AnswerA = question.AnswerA.trim()
-        question.AnswerB = question.AnswerB.trim()
-        question.AnswerC = question.AnswerC.trim()
-        question.AnswerD = question.AnswerD.trim()
-        if (!isValidQuestion(question)) {
-            toastr.error("Chưa nhập đủ thông tin", "Thông báo");
-        }
-        else {
+        //Nếu cập nhật lần đầu
+        if (isUpdateFirst == true) {
+            $("#table-question-exam tbody tr").each(function () {
+                const questionId = parseInt($(this).attr("data-target"));
+                //Thêm id câu hỏi vào selectedQuestionIdLst
+                if (!selectedQuestionIdLst.includes(questionId)) {
+                    selectedQuestionIdLst.push(questionId);
+                }
 
+                isUpdateFirst = false;
+            })
+        }
+        const exam = $("#form-question").serializeObject();
+        //Thông tin hợp lệ
+        if (isValidExam(exam)) {
+            //Bỏ dấu cách
+            exam.ExamName = exam.ExamName.trim();
             $.ajax({
-                url: "/admin/questionadmin/eventupdate",
+                url: "/admin/examadmin/eventupdate",
                 type: "POST",
                 data: {
-                    question: question,
+                    exam: exam,
+                    questionIdLst: selectedQuestionIdLst,
                 },
                 dataType: "json",
                 beforeSend: function () {
@@ -222,7 +224,6 @@ $(document).ready(function () {
                 },
                 error: function () {
                     toastr.error("Máy chủ tạm thời không phản hồi, vui lòng thử lại sau", "Thông báo");
-
                 },
             }).always(function () {
                 hideLoading();
@@ -287,11 +288,53 @@ isValidExam = function (question) {
 }
 
 //Hàm lấy các question đã được chọn và gán vào biến global selectedQuestionIdLst
-updateSelectedQuestionIdLst = function () {
-    $("#table-question-selected tbody tr").each(function () {
-        const questionId = parseInt($(this).attr("data-target"));
-        selectedQuestionIdLst.push(questionId);
-    })
+setSelectedQuestionIdLst = function () {
+    //Rest
+    selectedQuestionIdLst = []
+    if ($("#table-question-exam tbody tr").length == 0) {
+        $("#table-question-selected").html("<p class='text-center mt-4'>Không có dữ liệu</p>");
+        //Bỏ hết đánh dấu
+        $("#table-question tbody tr").removeClass("selected");
+    }
+    else {
+        $("#table-question-exam tbody tr").each(function () {
+            const questionId = parseInt($(this).attr("data-target"));
+            //Chưa có câu hỏi nào
+            if (selectedQuestionIdLst.length == 0) {
+                //Setup table html
+                $("#table-question-selected").html(
+                    "<table class='table table-hover'>" +
+                    "   <thead>" +
+                    "       <tr>" +
+                    "           <th>Câu hỏi</th>" +
+                    "           <th>Chủ đề</th>" +
+                    "           <th>Đáp án A</th>" +
+                    "           <th>Đáp án B</th>" +
+                    "           <th>Đáp án C</th>" +
+                    "           <th>Đáp án D</th>" +
+                    "           <th>Đáp án đúng</th>" +
+                    "       </tr>" +
+                    "   </thead>" +
+                    "   <tbody>" +
+                    "   </tbody>" +
+                    "</table>");
+            }
+            //Thêm html vào danh sách question đã chọn
+            const newTrElement = $(this).clone();
+            //Xoá cột stt
+            newTrElement.find("td:first-child").remove();
+            $("#table-question-selected tbody").append(newTrElement.prop('outerHTML'));
+            //Đánh dấu vào danh sách question
+            $(`#table-question tbody tr[data-target=${questionId}]`).addClass("selected");
+            //Thêm id câu hỏi vào selectedQuestionIdLst
+            selectedQuestionIdLst.push(questionId);
+            //Cập nhật giao diện
+            updateTotalQuestionSelected();
+        })
+    }
+    console.log(selectedQuestionIdLst)
+    updateTotalQuestionSelected();
+
 }
 
 //#region load table question 

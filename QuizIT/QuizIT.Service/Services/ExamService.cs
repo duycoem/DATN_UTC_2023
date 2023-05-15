@@ -13,10 +13,10 @@ namespace QuizIT.Service.Services
     {
         private readonly QuizITContext dbContext = new QuizITContext();
         private readonly string CREATE_SUCCESS = "Thêm bộ đề thành công";
-        private readonly string UPDATE_SUCCESS = "Cập nhật câu hỏi thành công";
-        private readonly string DELETE_SUCCESS = "Xoá câu hỏi thành công";
-        private readonly string DELETE_FAILED = "Câu hỏi đã thuộc 1 bộ đề hoặc nằm trong lịch sử làm đề, không thể xoá";
-        private readonly string NOT_FOUND = "Câu hỏi không tồn tại";
+        private readonly string UPDATE_SUCCESS = "Cập nhật bộ đề thành công";
+        private readonly string DELETE_SUCCESS = "Xoá bộ đề thành công";
+        private readonly string DELETE_FAILED = "Bộ đề đã thuộc 1 bộ đề hoặc nằm trong lịch sử làm đề, không thể xoá";
+        private readonly string NOT_FOUND = "Bộ đề không tồn tại";
 
         public ServiceResult<Exam> GetPage(FilterExam filter)
         {
@@ -47,6 +47,33 @@ namespace QuizIT.Service.Services
                          (filter.IsActive == -1 || q.IsActive == Convert.ToBoolean(filter.IsActive))
                      )
                     .Count();
+            }
+            catch
+            {
+                serviceResult.ResponseCode = ResponseCode.INTERNAL_SERVER_ERROR;
+                serviceResult.ResponseMess = ResponseMessage.INTERNAL_SERVER_ERROR;
+            }
+
+            return serviceResult;
+        }
+
+        public ServiceResult<Exam> GetById(int examdId)
+        {
+            ServiceResult<Exam> serviceResult = new ServiceResult<Exam>
+            {
+                ResponseCode = ResponseCode.SUCCESS,
+            };
+            try
+            {
+                Exam exam = dbContext.Exam.FirstOrDefault(c => c.Id == examdId);
+                if (exam == null)
+                {
+                    return new ServiceResult<Exam>
+                    {
+                        ResponseCode = ResponseCode.NOT_FOUND,
+                    };
+                }
+                serviceResult.Result.Add(exam);
             }
             catch
             {
@@ -95,5 +122,92 @@ namespace QuizIT.Service.Services
 
             return serviceResult;
         }
+
+        public async Task<ServiceResult<string>> Update(Exam examNew, List<int> questionIdNewLst)
+        {
+            ServiceResult<string> serviceResult = new ServiceResult<string>
+            {
+                ResponseCode = ResponseCode.SUCCESS,
+                ResponseMess = UPDATE_SUCCESS
+            };
+            try
+            {
+                //Lấy ra exam cũ trong db
+                Exam examOld = dbContext.Exam.FirstOrDefault(c => c.Id == examNew.Id);
+                //Sai id
+                if (examOld == null)
+                {
+                    serviceResult.ResponseCode = ResponseCode.NOT_FOUND;
+                    serviceResult.ResponseMess = NOT_FOUND;
+                }
+                else
+                {
+                    //Cập nhật thông tin exam
+                    examOld.ExamName = examNew.ExamName;
+                    examOld.CategoryId = examNew.CategoryId;
+                    examOld.Time = examNew.Time;
+                    examOld.IsActive = examNew.IsActive;
+                    //Lưu lại xuống database 
+                    dbContext.Exam.Update(examOld);
+                    await dbContext.SaveChangesAsync();
+                    //Cập nhật question của exam
+                    await UpdateQuesitionOfExam(examOld.Id, examOld.ExamDetail.ToList(), questionIdNewLst);
+                    //Xoá những bảng xếp có số điểm > số câu hỏi
+                    dbContext.Rank.RemoveRange(dbContext.Rank.Where(r => r.Point > questionIdNewLst.Count));
+                    await dbContext.SaveChangesAsync();
+                }
+            }
+            catch
+            {
+                serviceResult.ResponseCode = ResponseCode.INTERNAL_SERVER_ERROR;
+                serviceResult.ResponseMess = ResponseMessage.INTERNAL_SERVER_ERROR;
+            }
+
+            return serviceResult;
+        }
+
+        private async Task UpdateQuesitionOfExam(int examId, List<ExamDetail> examDetailldLst, List<int> questionIdNewLst)
+        {
+            List<ExamDetail> examDetailCreateLst = new List<ExamDetail>();
+            List<ExamDetail> examDetailUpdateLst = new List<ExamDetail>();
+            List<ExamDetail> examDetailDeleteLst = new List<ExamDetail>();
+            //Duyệt list exam detail cũ
+            foreach (var examDetail in examDetailldLst)
+            {
+                //Nếu nằm trong list question id mới => cập nhật exam detail
+                int indexOf = questionIdNewLst.IndexOf(examDetail.QuestionId);
+                if (indexOf != -1)
+                {
+                    examDetail.Order = indexOf + 1;
+                    examDetailUpdateLst.Add(examDetail);
+                }
+                //Nếu không trong list question id mới cập nhật => xoá exam detail
+                else
+                {
+                    examDetailDeleteLst.Add(examDetail);
+                }
+            }
+
+            //Duyệt list question id mới 
+            for (int i = 0; i < questionIdNewLst.Count; i++)
+            {
+                //Nếu không nằm trong list exam detail cũ => thêm mới
+                if (examDetailldLst.FirstOrDefault(c => c.QuestionId == questionIdNewLst[i]) == null)
+                {
+                    examDetailCreateLst.Add(new ExamDetail
+                    {
+                        ExamId = examId,
+                        QuestionId = questionIdNewLst[i],
+                        Order = (i + 1)
+                    });
+                }
+            }
+
+            //Cập nhật
+            dbContext.ExamDetail.RemoveRange(examDetailDeleteLst);
+            dbContext.ExamDetail.UpdateRange(examDetailUpdateLst);
+            await dbContext.ExamDetail.AddRangeAsync(examDetailCreateLst);
+        }
+
     }
 }

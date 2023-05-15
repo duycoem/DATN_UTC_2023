@@ -65,6 +65,32 @@ namespace QuizIT.Web.Areas.Admin.Controllers
             return View();
         }
 
+        [Route("/admin/bo-de/chi-tiet/{examId}")]
+        public IActionResult Detail(int examId)
+        {
+            ViewBag.ActivePage = "exam";
+            //Lấy ra tất cả thể loại để filter
+            var categoryServiceResult = categoryService.GetPage(new FilterCategory
+            {
+                PageSize = int.MaxValue
+            });
+            //Lấy thông tin exam
+            var examServiceResult = examService.GetById(examId);
+            //Sai id
+            if (examServiceResult.ResponseCode == ResponseCode.NOT_FOUND)
+            {
+                return Redirect("~/error");
+            }
+            //Gọi service bị lỗi
+            if (categoryServiceResult.ResponseCode != ResponseCode.SUCCESS ||
+                examServiceResult.ResponseCode != ResponseCode.SUCCESS)
+            {
+                return Redirect("~/internal-server-error");
+            }
+            ViewBag.CategoryLst = categoryServiceResult.Result;
+            return View(examServiceResult.Result.FirstOrDefault());
+        }
+
         [HttpPost]
         public IActionResult TableQuestion(FilterQuestion filter)
         {
@@ -84,7 +110,14 @@ namespace QuizIT.Web.Areas.Admin.Controllers
         public async Task<IActionResult> EventCreate(Exam exam, List<int> questionIdLst)
         {
             var serviceResult = await examService.Create(exam, questionIdLst);
-            return Json(serviceResult.Result);
+            return Json(serviceResult);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> EventUpdate(Exam exam, List<int> questionIdLst)
+        {
+            var serviceResult = await examService.Update(exam, questionIdLst);
+            return Json(serviceResult);
         }
     }
 }
