@@ -12,5 +12,6 @@ namespace QuizIT.Service.IServices
         ServiceResult<Exam> GetById(int examdId);
         Task<ServiceResult<string>> Create(Exam exam, List<int> questionIdLst);
         Task<ServiceResult<string>> Update(Exam examNew, List<int> questionIdNewLst);
+        Task<ServiceResult<string>> Delete(Exam exam);
     }
 }

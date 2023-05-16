@@ -15,7 +15,7 @@ namespace QuizIT.Service.Services
         private readonly string CREATE_SUCCESS = "Thêm bộ đề thành công";
         private readonly string UPDATE_SUCCESS = "Cập nhật bộ đề thành công";
         private readonly string DELETE_SUCCESS = "Xoá bộ đề thành công";
-        private readonly string DELETE_FAILED = "Bộ đề đã thuộc 1 bộ đề hoặc nằm trong lịch sử làm đề, không thể xoá";
+        private readonly string DELETE_FAILED = "Bộ đề đã thuộc đã nằm trong lịch sử làm đề hoặc bảng xếp hạng, không thể xoá";
         private readonly string NOT_FOUND = "Bộ đề không tồn tại";
 
         public ServiceResult<Exam> GetPage(FilterExam filter)
@@ -154,8 +154,45 @@ namespace QuizIT.Service.Services
                     await UpdateQuesitionOfExam(examOld.Id, examOld.ExamDetail.ToList(), questionIdNewLst);
                     //Xoá những bảng xếp có số điểm > số câu hỏi
                     dbContext.Rank.RemoveRange(dbContext.Rank.Where(r => r.Point > questionIdNewLst.Count));
+                    //Xoá những bảng xếp có thời gian hoàn thành > thời gian làm của bộ đề
+                    dbContext.Rank.RemoveRange(dbContext.Rank.Where(r => r.TimeDoExam > examOld.Time));
                     await dbContext.SaveChangesAsync();
                 }
+            }
+            catch
+            {
+                serviceResult.ResponseCode = ResponseCode.INTERNAL_SERVER_ERROR;
+                serviceResult.ResponseMess = ResponseMessage.INTERNAL_SERVER_ERROR;
+            }
+
+            return serviceResult;
+        }
+
+        public async Task<ServiceResult<string>> Delete(Exam exam)
+        {
+            ServiceResult<string> serviceResult = new ServiceResult<string>
+            {
+                ResponseCode = ResponseCode.SUCCESS,
+                ResponseMess = DELETE_SUCCESS
+            };
+            try
+            {
+                //Kiểm tra xem đã có bộ đề đã có trong lịch sử/bảng xếp hạng chưa
+                if (dbContext.History.FirstOrDefault(e => e.ExamId == exam.Id) != null ||
+                    dbContext.Rank.FirstOrDefault(q => q.ExamId == exam.Id) != null)
+                {
+                    serviceResult.ResponseCode = ResponseCode.BAD_REQUEST;
+                    serviceResult.ResponseMess = DELETE_FAILED;
+                }
+                else
+                {
+                    //Xoá bảng exam detail
+                    dbContext.ExamDetail.RemoveRange(dbContext.ExamDetail.Where(c => c.ExamId == exam.Id));
+                    //Xoá bảng exam
+                    dbContext.Exam.Remove(dbContext.Exam.FirstOrDefault(c => c.Id == exam.Id));
+                    await dbContext.SaveChangesAsync();
+                }
+
             }
             catch
             {

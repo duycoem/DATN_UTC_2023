@@ -112,7 +112,7 @@ namespace QuizIT.Service.Services
             try
             {
                 //Kiểm tra xem tên chủ đề có bị trùng hay không
-                validateCategory(category, ref serviceResult);
+                validateCategory(category, ref serviceResult, isUpdate: true);
                 //Không bị trùng tên chủ đề
                 if (serviceResult.ResponseCode != ResponseCode.BAD_REQUEST)
                 {
@@ -173,13 +173,27 @@ namespace QuizIT.Service.Services
         }
 
         //Kiểm tra xem tên chủ đề có bị trùng hay không
-        private void validateCategory(Category category, ref ServiceResult<string> serviceResult)
+        private void validateCategory(Category category, ref ServiceResult<string> serviceResult, bool isUpdate = false)
         {
-            if (dbContext.Category.FirstOrDefault(c => c.CategoryName.ToLower() == category.CategoryName.ToLower()) != null)
+            //Thêm
+            if (isUpdate == false)
             {
-                serviceResult.ResponseCode = ResponseCode.BAD_REQUEST;
-                serviceResult.ResponseMess = EXISTS_CATEGORY_NAME;
+                if (dbContext.Category.FirstOrDefault(c => c.CategoryName.ToLower() == category.CategoryName.ToLower()) != null)
+                {
+                    serviceResult.ResponseCode = ResponseCode.BAD_REQUEST;
+                    serviceResult.ResponseMess = EXISTS_CATEGORY_NAME;
+                }
             }
+            //Cập nhật
+            else
+            {
+                if (dbContext.Category.FirstOrDefault(c => c.CategoryName.ToLower() == category.CategoryName.ToLower() && c.Id != category.Id) != null)
+                {
+                    serviceResult.ResponseCode = ResponseCode.BAD_REQUEST;
+                    serviceResult.ResponseMess = EXISTS_CATEGORY_NAME;
+                }
+            }
+
         }
     }
 }

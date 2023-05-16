@@ -232,14 +232,14 @@ $(document).ready(function () {
     });
     //#endregion
 
-    //#region SỰ KIỆN XOÁ CÂU HỎI
+    //#region SỰ KIỆN XOÁ BỘ ĐỀ
     $(document).on("click", "#btn-delete", function () {
-        const question = $("#form-question").serializeObject();
+        const exam = $("#form-question").serializeObject();
         $.ajax({
-            url: "/admin/questionadmin/eventdelete",
+            url: "/admin/examadmin/eventdelete",
             type: "POST",
             data: {
-                question: question,
+                exam: exam,
             },
             dataType: "json",
             beforeSend: function () {
@@ -249,7 +249,7 @@ $(document).ready(function () {
                 if (response.responseCode == "200") {
                     toastr.success(response.responseMess, "Thông báo");
                     setTimeout(function () {
-                        window.location.href = "/admin/bo-de";
+                        window.location.href = "/admin/bo-de"
                     }, 800);
                 }
                 else {
@@ -258,15 +258,12 @@ $(document).ready(function () {
             },
             error: function () {
                 toastr.error("Máy chủ tạm thời không phản hồi, vui lòng thử lại sau", "Thông báo");
-
             },
         }).always(function () {
             hideLoading();
         });
     });
     //#endregion
-
-
 
 });
 
@@ -332,7 +329,6 @@ setSelectedQuestionIdLst = function () {
             updateTotalQuestionSelected();
         })
     }
-    console.log(selectedQuestionIdLst)
     updateTotalQuestionSelected();
 
 }

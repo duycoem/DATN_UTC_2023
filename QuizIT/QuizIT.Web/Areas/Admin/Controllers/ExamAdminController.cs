@@ -119,5 +119,12 @@ namespace QuizIT.Web.Areas.Admin.Controllers
             var serviceResult = await examService.Update(exam, questionIdLst);
             return Json(serviceResult);
         }
+
+        [HttpPost]
+        public async Task<IActionResult> EventDelete(Exam exam)
+        {
+            var serviceResult = await examService.Delete(exam);
+            return Json(serviceResult);
+        }
     }
 }

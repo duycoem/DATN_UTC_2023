@@ -4,12 +4,13 @@ using Microsoft.AspNetCore.Mvc;
 namespace QuizIT.Web.Controllers
 {
 
-    public class ExamController : Controller
+    public class ExamController : BaseController
     {
         [Route("/bo-de")]
         [AuthorizationFilter]
         public IActionResult Index()
         {
+            ViewBag.ActivePage = "exam";
             return View();
         }
     }
