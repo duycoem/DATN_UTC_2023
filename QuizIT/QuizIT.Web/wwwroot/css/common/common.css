@@ -243,12 +243,13 @@ a:hover {
 
     .table td:nth-child(2) > a {
         color: black;
+        display: block;
     }
 
-    .table td#btn-modal:hover, .table td:nth-child(2):hover > a {
-        color: var(--main-color);
-        font-weight: bold;
-    }
+        .table td#btn-modal:hover, .table td:nth-child(2) > a:hover {
+            color: var(--main-color);
+            font-weight: bold;
+        }
 
 .pagination {
     width: 100%;
@@ -345,6 +346,50 @@ body::-webkit-scrollbar-thumb {
     cursor: text !important;
 }
 
+.exam-sub-title {
+    margin-bottom: 8px;
+}
+
+.exam-main-title {
+    font-weight: bold;
+    margin-bottom: 25px;
+}
+
+#count-down-wrapper {
+    position: fixed;
+    right: 20px;
+    top: 100px;
+}
+
+.question-item {
+    margin-bottom: 25px;
+    line-height: 20px;
+    font-size: 16px;
+}
+
+.question-title {
+    margin-bottom: 15px;
+    line-height: 24px;
+}
+
+.question-answer {
+    display: flex;
+    align-items: start;
+    margin-bottom: 8px;
+}
+
+    .question-answer input[type="radio"] {
+        transform: scale(1.15)
+    }
+
+.question-input {
+    padding-top: 1px;
+    margin-right: 10px;
+}
+
+.question-answer span {
+    color: red;
+}
 
 @media (max-width: 768px) {
     .sidebar {

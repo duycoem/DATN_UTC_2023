@@ -8,7 +8,7 @@ namespace QuizIT.Service.Entities
         public int Id { get; set; }
         public int ExamId { get; set; }
         public int UserId { get; set; }
-        public int TimeDoExam { get; set; }
+        public double TimeDoExam { get; set; }
         public int Point { get; set; }
 
         public virtual Exam Exam { get; set; }

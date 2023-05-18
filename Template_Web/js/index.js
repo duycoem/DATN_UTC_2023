@@ -1,13 +1,24 @@
-var inputArray = [1, 0, 1];
-var max = inputArray[0];
-var moves = 0;
-for (var i = 1; i < inputArray.length; i++) {
-  if (inputArray[i] <= max) {
-    max+=1;
-    moves += max - inputArray[i];
-  }
-  else{
-    max = inputArray[i];
-  }
+function startTimer(duration, display) {
+  var timer = duration;
+  let minutes, seconds;
+  setInterval(function () {
+    console.log(timer);
+      if (timer == 0) {
+        console.log('hết giờ');
+      }
+      minutes = parseInt(timer / 60, 10);
+      seconds = parseInt(timer % 60, 10);
+
+      minutes = minutes < 10 ? "0" + minutes : minutes;
+      seconds = seconds < 10 ? "0" + seconds : seconds;
+
+      display.textContent = minutes + ":" + seconds;
+      timer--;
+  }, 1000);
 }
-alert(moves);
+
+window.onload = function () {
+  var fiveMinutes = 10,
+      display = document.querySelector('#time');
+  startTimer(fiveMinutes, display);
+};
