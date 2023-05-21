@@ -177,7 +177,7 @@ namespace QuizIT.Service.Services
             };
             try
             {
-                //Kiểm tra xem đã có bộ đề đã có trong lịch sử/bảng xếp hạng chưa
+                //Kiểm tra xem bộ đề đã có trong lịch sử/bảng xếp hạng chưa
                 if (dbContext.History.FirstOrDefault(e => e.ExamId == exam.Id) != null ||
                     dbContext.Rank.FirstOrDefault(q => q.ExamId == exam.Id) != null)
                 {

@@ -382,6 +382,10 @@ body::-webkit-scrollbar-thumb {
         transform: scale(1.15)
     }
 
+    .question-answer input.readonly {
+        pointer-events: none;
+    }
+
 .question-input {
     padding-top: 1px;
     margin-right: 10px;
