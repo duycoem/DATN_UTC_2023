@@ -4,7 +4,9 @@ using QuizIT.Common.Models;
 using QuizIT.Service.IServices;
 using QuizIT.Service.Models;
 using QuizIT.Web.Filter;
+using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace QuizIT.Web.Controllers
 {
@@ -22,7 +24,6 @@ namespace QuizIT.Web.Controllers
         }
 
         [Route("/bo-de")]
-        [AuthorizationFilter]
         public IActionResult Index(FilterExam filter)
         {
             ViewBag.ActivePage = "exam";
@@ -83,6 +84,14 @@ namespace QuizIT.Web.Controllers
                 return Redirect("~/internal-server-error");
             }
             return View(examServiceResult.Result.FirstOrDefault());
+        }
+
+        //Sự kiện chấm điểm khi nộp bài
+        [HttpPost]
+        public async Task<IActionResult> EventMarkPoint(int examId, double timeDoExam, List<QuestionSelect> questionSelectLst)
+        {
+            var serviceResult = await examService.MarkPoint(examId, timeDoExam, questionSelectLst);
+            return Json(serviceResult);
         }
     }
 }

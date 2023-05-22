@@ -17,6 +17,70 @@ namespace QuizIT.Service.Services
         private readonly string DELETE_SUCCESS = "Xoá bộ đề thành công";
         private readonly string DELETE_FAILED = "Bộ đề đã thuộc đã nằm trong lịch sử làm đề hoặc bảng xếp hạng, không thể xoá";
         private readonly string NOT_FOUND = "Bộ đề không tồn tại";
+        private readonly string INAVTIVE = "Bộ đề không hoạt động";
+        private readonly string SUBMIT_SUCCESS = "Nộp bài thành công";
+
+        public ServiceResult<History> GetHistoryPage(FilterHistory filter)
+        {
+            ServiceResult<History> serviceResult = new ServiceResult<History>
+            {
+                ResponseCode = ResponseCode.SUCCESS
+            };
+            try
+            {
+
+                serviceResult.Result = dbContext.History
+                     .Where(q =>
+                         q.UserId == CurrentUser.Id &&
+                         (filter.ExamId == -1 || q.ExamId == filter.ExamId)
+                     )
+                     .Skip((filter.PageNumber - 1) * filter.PageSize)
+                     .Take(filter.PageSize)
+                     .OrderByDescending(q => q.CreatedAt)
+                     .ToList();
+
+                serviceResult.TotalRecord = dbContext.History
+                    .Where(q =>
+                         q.UserId == CurrentUser.Id &&
+                         (filter.ExamId == -1 || q.ExamId == filter.ExamId)
+                     )
+                     .Count();
+            }
+            catch
+            {
+                serviceResult.ResponseCode = ResponseCode.INTERNAL_SERVER_ERROR;
+                serviceResult.ResponseMess = ResponseMessage.INTERNAL_SERVER_ERROR;
+            }
+
+            return serviceResult;
+        }
+
+        public ServiceResult<History> GetHistoryById(int historyId)
+        {
+            ServiceResult<History> serviceResult = new ServiceResult<History>
+            {
+                ResponseCode = ResponseCode.SUCCESS,
+            };
+            try
+            {
+                History history = dbContext.History.FirstOrDefault(c => c.Id == historyId);
+                if (history == null)
+                {
+                    return new ServiceResult<History>
+                    {
+                        ResponseCode = ResponseCode.NOT_FOUND,
+                    };
+                }
+                serviceResult.Result.Add(history);
+            }
+            catch
+            {
+                serviceResult.ResponseCode = ResponseCode.INTERNAL_SERVER_ERROR;
+                serviceResult.ResponseMess = ResponseMessage.INTERNAL_SERVER_ERROR;
+            }
+
+            return serviceResult;
+        }
 
         public ServiceResult<Exam> GetPage(FilterExam filter)
         {
@@ -155,7 +219,7 @@ namespace QuizIT.Service.Services
                     //Xoá những bảng xếp có số điểm > số câu hỏi
                     dbContext.Rank.RemoveRange(dbContext.Rank.Where(r => r.Point > questionIdNewLst.Count));
                     //Xoá những bảng xếp có thời gian hoàn thành > thời gian làm của bộ đề
-                    dbContext.Rank.RemoveRange(dbContext.Rank.Where(r => r.TimeDoExam > examOld.Time));
+                    dbContext.Rank.RemoveRange(dbContext.Rank.Where(r => r.TimeDoExam > (double)examOld.Time));
                     await dbContext.SaveChangesAsync();
                 }
             }
@@ -246,5 +310,123 @@ namespace QuizIT.Service.Services
             await dbContext.ExamDetail.AddRangeAsync(examDetailCreateLst);
         }
 
+        public async Task<ServiceResult<int>> MarkPoint(int examId, double timeDoExam, List<QuestionSelect> questionSelectLst)
+        {
+            ServiceResult<int> serviceResult = new ServiceResult<int>
+            {
+                ResponseCode = ResponseCode.SUCCESS,
+                ResponseMess = SUBMIT_SUCCESS
+            };
+            try
+            {
+                Exam exam = dbContext.Exam.FirstOrDefault(c => c.Id == examId);
+                //Sai id
+                if (exam == null)
+                {
+                    return new ServiceResult<int>
+                    {
+                        ResponseCode = ResponseCode.NOT_FOUND,
+                        ResponseMess = NOT_FOUND
+                    };
+                }
+                //Bộ đề không hoạt động
+                if (exam.IsActive == false)
+                {
+                    return new ServiceResult<int>
+                    {
+                        ResponseCode = ResponseCode.BAD_REQUEST,
+                        ResponseMess = INAVTIVE
+                    };
+                }
+                if (timeDoExam > exam.Time)
+                {
+                    timeDoExam = exam.Time;
+                }
+                int point = 0;
+                List<HistoryDetail> historyDetailLst = new List<HistoryDetail>();
+                foreach (var examDetail in exam.ExamDetail.OrderBy(c => c.Order))
+                {
+                    //Kiểm tra xem người dùng có trả lời câu hỏi này hay k
+                    var questionSelect = questionSelectLst.FirstOrDefault(c => c.QuestionId == examDetail.QuestionId);
+                    //Nêu chọn đúng đáp án thì tăng điểm lên
+                    if (questionSelect != null && examDetail.Question.AnswerCorrect == questionSelect.AnswerSelect)
+                    {
+                        point++;
+                    }
+                    //Add vào history detail
+                    historyDetailLst.Add(new HistoryDetail
+                    {
+                        QuestionId = examDetail.QuestionId,
+                        AnswerSelect = questionSelect == null ? "X" : questionSelect.AnswerSelect
+                    });
+                }
+
+                //Lưu lịch sử
+                History history = new History
+                {
+                    ExamId = examId,
+                    UserId = CurrentUser.Id,
+                    TimeDoExam = timeDoExam,
+                    Point = point
+                };
+                dbContext.History.Add(history);
+                await dbContext.SaveChangesAsync();
+
+                //Lưu chi tiết lịch sử
+                dbContext.HistoryDetail.AddRange(historyDetailLst.Select(x => new HistoryDetail
+                {
+                    HistoryId = history.Id, //Cập nhật historyId
+                    QuestionId = x.QuestionId,
+                    AnswerSelect = x.AnswerSelect
+                }));
+                await dbContext.SaveChangesAsync();
+
+                //Cập nhật bảng xếp hạng
+                await UpdateRank(examId, timeDoExam, point);
+                //Trả ra id của history vừa thêm để điều hướng
+                serviceResult.Result.Add(history.Id);
+            }
+            catch (Exception e)
+            {
+                serviceResult.ResponseCode = ResponseCode.INTERNAL_SERVER_ERROR;
+                serviceResult.ResponseMess = ResponseMessage.INTERNAL_SERVER_ERROR;
+            }
+            return serviceResult;
+        }
+
+        private async Task UpdateRank(int examId, double timeDoExam, int point)
+        {
+            //Kiểm tra xem người dùng đã có trong bảng xếp hạng này hay chưa
+            var rankOld = dbContext.Rank.FirstOrDefault(r => r.ExamId == examId && r.UserId == CurrentUser.Id);
+            //Chưa có trong bảng xếp hạng thì thêm mới
+            if (rankOld == null)
+            {
+                dbContext.Rank.Add(new Rank
+                {
+                    ExamId = examId,
+                    UserId = CurrentUser.Id,
+                    TimeDoExam = timeDoExam,
+                    Point = point
+                });
+            }
+            //Đã có thì kiểm tra thành tích để chỉ lưu lại thành tích tốt nhất
+            else
+            {
+                //Điểm cũ nhỏ hơn điểm hiện tại thì lưu lại điểm mới
+                if (rankOld.Point < point)
+                {
+                    rankOld.Point = point;
+                    rankOld.TimeDoExam = timeDoExam;
+                    dbContext.Rank.Update(rankOld);
+                }
+                //Điểm cũ bằng điểm hiện tại và thời gian cũ lâu hơn thời gian hiện tại thì lưu lại thời gian mới
+                else if (rankOld.Point == point && rankOld.TimeDoExam > timeDoExam)
+                {
+                    rankOld.TimeDoExam = timeDoExam;
+                    dbContext.Rank.Update(rankOld);
+                }
+            }
+            await dbContext.SaveChangesAsync();
+        }
     }
 }

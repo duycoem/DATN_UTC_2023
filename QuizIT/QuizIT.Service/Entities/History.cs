@@ -15,7 +15,7 @@ namespace QuizIT.Service.Entities
         public int UserId { get; set; }
         public double TimeDoExam { get; set; }
         public int Point { get; set; }
-        public DateTime? CreatedAt { get; set; }
+        public DateTime CreatedAt { get; set; }
 
         public virtual Exam Exam { get; set; }
         public virtual User User { get; set; }

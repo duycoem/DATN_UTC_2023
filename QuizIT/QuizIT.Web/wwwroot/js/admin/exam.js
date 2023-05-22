@@ -268,12 +268,16 @@ $(document).ready(function () {
 });
 
 
-isValidExam = function (question) {
-    if (question.Time <= 0) {
+isValidExam = function (exam) {
+    if (exam.Time.toString().includes(".")) {
+        toastr.error("Thời gian phải là số nguyên", "Thông báo");
+        return false;
+    }
+    if (exam.Time <= 0) {
         toastr.error("Thời gian không hợp lệ", "Thông báo");
         return false;
     }
-    if (question.ExamName == "") {
+    if (exam.ExamName == "") {
         toastr.error("Chưa nhập đủ thông tin", "Thông báo");
         return false;
     }
@@ -282,6 +286,18 @@ isValidExam = function (question) {
         return false;
     }
     return true;
+}
+
+isFloat = function (value) {
+    if (
+        typeof value === 'number' &&
+        !Number.isNaN(value) &&
+        !Number.isInteger(value)
+    ) {
+        return true;
+    }
+
+    return false;
 }
 
 //Hàm lấy các question đã được chọn và gán vào biến global selectedQuestionIdLst

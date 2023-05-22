@@ -361,6 +361,12 @@ body::-webkit-scrollbar-thumb {
     top: 100px;
 }
 
+.btn-submit-exam {
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+}
+
 .question-item {
     margin-bottom: 25px;
     line-height: 20px;

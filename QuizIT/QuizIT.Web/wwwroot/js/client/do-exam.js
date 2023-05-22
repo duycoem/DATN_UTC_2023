@@ -33,8 +33,8 @@ startCountDown = function () {
         if (timer == 0) {
             clearInterval(countDown)
             //Todo
-            toastr.warning(timeDo, "Thông báo");
-            console.log(timeDo);
+            /*toastr.warning(timeDo, "Thông báo");
+            console.log(timeDo);*/
         }
         else {
             timer--;
