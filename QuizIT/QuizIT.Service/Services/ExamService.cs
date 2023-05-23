@@ -2,6 +2,7 @@
 using QuizIT.Service.Entities;
 using QuizIT.Service.IServices;
 using QuizIT.Service.Models;
+using static QuizIT.Common.Constant.Role;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,8 +18,36 @@ namespace QuizIT.Service.Services
         private readonly string DELETE_SUCCESS = "Xoá bộ đề thành công";
         private readonly string DELETE_FAILED = "Bộ đề đã thuộc đã nằm trong lịch sử làm đề hoặc bảng xếp hạng, không thể xoá";
         private readonly string NOT_FOUND = "Bộ đề không tồn tại";
+        private readonly string NOT_FOUND_HISTORY = "Lịch sử không tồn tại";
         private readonly string INAVTIVE = "Bộ đề không hoạt động";
         private readonly string SUBMIT_SUCCESS = "Nộp bài thành công";
+        private readonly string SUBMIT_AGAIN_SUCCESS = "Chấm bài lại thành công";
+
+        public ServiceResult<Rank> GetAllRank(int examId)
+        {
+            ServiceResult<Rank> serviceResult = new ServiceResult<Rank>
+            {
+                ResponseCode = ResponseCode.SUCCESS
+            };
+            try
+            {
+
+                serviceResult.Result = dbContext.Rank
+                    .Where(q => q.ExamId == examId)
+                    .OrderByDescending(q => q.Point)
+                    .ThenBy(q => q.TimeDoExam)
+                    .Take(10)
+                    .ToList();
+
+            }
+            catch
+            {
+                serviceResult.ResponseCode = ResponseCode.INTERNAL_SERVER_ERROR;
+                serviceResult.ResponseMess = ResponseMessage.INTERNAL_SERVER_ERROR;
+            }
+
+            return serviceResult;
+        }
 
         public ServiceResult<History> GetHistoryPage(FilterHistory filter)
         {
@@ -28,23 +57,47 @@ namespace QuizIT.Service.Services
             };
             try
             {
-
-                serviceResult.Result = dbContext.History
-                     .Where(q =>
-                         q.UserId == CurrentUser.Id &&
-                         (filter.ExamId == -1 || q.ExamId == filter.ExamId)
-                     )
-                     .Skip((filter.PageNumber - 1) * filter.PageSize)
-                     .Take(filter.PageSize)
-                     .OrderByDescending(q => q.CreatedAt)
-                     .ToList();
-
-                serviceResult.TotalRecord = dbContext.History
+                //Admin thì xem và có thể lọc toàn bộ lịch sử của người dùng
+                if (CurrentUser.Role == ADMIN)
+                {
+                    serviceResult.Result = dbContext.History
+                    .OrderByDescending(q => q.CreatedAt)
                     .Where(q =>
-                         q.UserId == CurrentUser.Id &&
-                         (filter.ExamId == -1 || q.ExamId == filter.ExamId)
-                     )
-                     .Count();
+                        (filter.UserId == -1 || q.UserId == filter.UserId) &&
+                        (filter.ExamId == -1 || q.ExamId == filter.ExamId)
+                    )
+                    .Skip((filter.PageNumber - 1) * filter.PageSize)
+                    .Take(filter.PageSize)
+                    .ToList();
+
+                    serviceResult.TotalRecord = dbContext.History
+                        .Where(q =>
+                             (filter.UserId == -1 || q.UserId == filter.UserId) &&
+                             (filter.ExamId == -1 || q.ExamId == filter.ExamId)
+                         )
+                         .Count();
+                }
+                //Khách hàng thì chỉ được xem của mình
+                else
+                {
+                    serviceResult.Result = dbContext.History
+                    .OrderByDescending(q => q.CreatedAt)
+                    .Where(q =>
+                        (q.UserId == CurrentUser.Id) &&
+                        (filter.ExamId == -1 || q.ExamId == filter.ExamId)
+                    )
+                    .Skip((filter.PageNumber - 1) * filter.PageSize)
+                    .Take(filter.PageSize)
+                    .ToList();
+
+                    serviceResult.TotalRecord = dbContext.History
+                        .Where(q =>
+                             (q.UserId == CurrentUser.Id) &&
+                             (filter.ExamId == -1 || q.ExamId == filter.ExamId)
+                         )
+                         .Count();
+                }
+
             }
             catch
             {
@@ -63,7 +116,10 @@ namespace QuizIT.Service.Services
             };
             try
             {
-                History history = dbContext.History.FirstOrDefault(c => c.Id == historyId);
+                History history = dbContext.History.FirstOrDefault(c =>
+                    (CurrentUser.Role == ADMIN || c.UserId == CurrentUser.Id) &&
+                    c.Id == historyId
+                );
                 if (history == null)
                 {
                     return new ServiceResult<History>
@@ -344,7 +400,7 @@ namespace QuizIT.Service.Services
                 }
                 int point = 0;
                 List<HistoryDetail> historyDetailLst = new List<HistoryDetail>();
-                foreach (var examDetail in exam.ExamDetail.OrderBy(c => c.Order))
+                foreach (var examDetail in exam.ExamDetail)
                 {
                     //Kiểm tra xem người dùng có trả lời câu hỏi này hay k
                     var questionSelect = questionSelectLst.FirstOrDefault(c => c.QuestionId == examDetail.QuestionId);
@@ -386,7 +442,73 @@ namespace QuizIT.Service.Services
                 //Trả ra id của history vừa thêm để điều hướng
                 serviceResult.Result.Add(history.Id);
             }
-            catch (Exception e)
+            catch
+            {
+                serviceResult.ResponseCode = ResponseCode.INTERNAL_SERVER_ERROR;
+                serviceResult.ResponseMess = ResponseMessage.INTERNAL_SERVER_ERROR;
+            }
+            return serviceResult;
+        }
+
+        public async Task<ServiceResult<int>> MarkPointAgain(int historyId, double timeDoExam)
+        {
+            ServiceResult<int> serviceResult = new ServiceResult<int>
+            {
+                ResponseCode = ResponseCode.SUCCESS,
+                ResponseMess = SUBMIT_AGAIN_SUCCESS
+            };
+            try
+            {
+                //Lấy ra history cũ
+                History historyOld = dbContext.History.FirstOrDefault(c => c.Id == historyId);
+                //Sai id
+                if (historyOld == null)
+                {
+                    return new ServiceResult<int>
+                    {
+                        ResponseCode = ResponseCode.NOT_FOUND,
+                        ResponseMess = NOT_FOUND_HISTORY
+                    };
+                }
+                //Bộ đề không hoạt động
+                if (historyOld.Exam.IsActive == false)
+                {
+                    return new ServiceResult<int>
+                    {
+                        ResponseCode = ResponseCode.BAD_REQUEST,
+                        ResponseMess = INAVTIVE
+                    };
+                }
+                if (timeDoExam > historyOld.Exam.Time)
+                {
+                    timeDoExam = historyOld.Exam.Time;
+                }
+                int point = 0;
+                //Lấy ra danh sách đáp án người dùng đã chọn
+                List<HistoryDetail> historyDetailOld = historyOld.HistoryDetail.ToList();
+                //Duyệt đáp án trong bộ đề
+                foreach (var examDetail in historyOld.Exam.ExamDetail)
+                {
+                    //Kiểm tra xem người dùng có trả lời câu hỏi này hay k
+                    var questionSelect = historyDetailOld.FirstOrDefault(c => c.QuestionId == examDetail.QuestionId);
+                    //Nêu chọn đúng đáp án thì tăng điểm lên
+                    if (questionSelect != null && examDetail.Question.AnswerCorrect == questionSelect.AnswerSelect)
+                    {
+                        point++;
+                    }
+                }
+
+                //Update lịch sử
+                historyOld.TimeDoExam = timeDoExam;
+                historyOld.Point = point;
+                dbContext.History.Update(historyOld);
+                await dbContext.SaveChangesAsync();
+
+                //Cập nhật bảng xếp hạng
+                await UpdateRank(historyOld.ExamId, timeDoExam, point);
+
+            }
+            catch
             {
                 serviceResult.ResponseCode = ResponseCode.INTERNAL_SERVER_ERROR;
                 serviceResult.ResponseMess = ResponseMessage.INTERNAL_SERVER_ERROR;

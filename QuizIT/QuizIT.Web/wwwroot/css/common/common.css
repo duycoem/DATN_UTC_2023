@@ -367,6 +367,12 @@ body::-webkit-scrollbar-thumb {
     bottom: 20px;
 }
 
+#btn-do-again {
+    position: fixed;
+    right: 110px;
+    bottom: 20px;
+}
+
 .question-item {
     margin-bottom: 25px;
     line-height: 20px;
@@ -388,18 +394,15 @@ body::-webkit-scrollbar-thumb {
         transform: scale(1.15)
     }
 
-    .question-answer input.readonly {
-        pointer-events: none;
-    }
+.question-item.readonly input, .question-item.readonly label {
+    pointer-events: none;
+}
 
 .question-input {
     padding-top: 1px;
     margin-right: 10px;
 }
 
-.question-answer span {
-    color: red;
-}
 
 @media (max-width: 768px) {
     .sidebar {

@@ -7,6 +7,13 @@
 @{
     ViewData["Title"] = "QuizIT | Chi tiết bộ đề";
     Layout = "~/Views/Shared/_LayoutClient.cshtml";
+    int top = 1;
+    var rankLst = ViewBag.RankLst as List<Rank>;
+    //Thêm 1 phần tử đằng sau làm lính canh
+    rankLst.Add(new Rank
+    {
+        Point = -1
+    });
 }
 
 @section scripts{
@@ -21,7 +28,7 @@
     <li class="breadcrumb-item active"><a href="~/bo-de/chi-tiet/@Model.Id">Chi tiết bộ đề</a></li>
 </ol>
 <div class="d-flex justify-content-end mt-4">
-    <a class="btn-base m-btn-grey text-white" href="~/admin/bo-de/tao">
+    <a class="btn-base m-btn-grey text-white" href="~/lich-su?examId=@Model.Id" target="_blank">
         <i class='bx bx-time'></i>
         Lịch sử làm
     </a>
@@ -45,37 +52,46 @@
 </div>
 <div class="content-card mt-4">
     <h1 class="form-sub-title">Top 10 bài làm tốt nhất</h1>
-@*    <p class="text-center mt-4">Chưa có bảng xếp hạng</p>*@
-    <div class="table-responsive ten-item mt-4">
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>STT</th>
-                    <th>Người dùng</th>
-                    <th>Số điểm</th>
-                    <th>Thời gian làm</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <th>1</th>
-                    <th>Mạnh Linh</th>
-                    <th>9</th>
-                    <th>10 phút</th>
-                </tr>
-                <tr>
-                    <th>2</th>
-                    <th>Tuấn Vũ</th>
-                    <th>9</th>
-                    <th>20 phút</th>
-                </tr>
-                <tr>
-                    <th>3</th>
-                    <th>Hiếu Nguyễn</th>
-                    <th>8</th>
-                    <th>20 phút</th>
-                </tr>
-            </tbody>
-        </table>
-    </div>
+    @if (rankLst.Count == 1)
+    {
+        <p class="text-center mt-4">Chưa có bảng xếp hạng</p>
+    }
+    else
+    {
+        <div class="table-responsive ten-item mt-4">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Top</th>
+                        <th>Người dùng</th>
+                        <th>Số câu làm đúng</th>
+                        <th>Thời gian làm</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for (int i = 0; i < rankLst.Count - 1; i++)
+                    {
+                        int second = Convert.ToInt32(rankLst[i].TimeDoExam * 60);
+                        <tr>
+                            <td>@top</td>
+                            <td class="bx-500">@rankLst[i].User.FullName.Trim()</td>
+                            <td>@rankLst[i].Point</td>
+                            <td>
+                                @((second/60) + " phút " + (second % 60 != 0 ? ((second%60) + " giây") : ""))
+                            </td>
+                        </tr>
+                        if (rankLst[i].Point != rankLst[i + 1].Point)
+                        {
+                            top++;
+                        }
+                        else if (rankLst[i].TimeDoExam != rankLst[i + 1].TimeDoExam)
+                        {
+                            top++;
+                        }
+                    }
+
+                </tbody>
+            </table>
+        </div>
+    }
 </div>

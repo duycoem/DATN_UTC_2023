@@ -288,18 +288,6 @@ isValidExam = function (exam) {
     return true;
 }
 
-isFloat = function (value) {
-    if (
-        typeof value === 'number' &&
-        !Number.isNaN(value) &&
-        !Number.isInteger(value)
-    ) {
-        return true;
-    }
-
-    return false;
-}
-
 //Hàm lấy các question đã được chọn và gán vào biến global selectedQuestionIdLst
 setSelectedQuestionIdLst = function () {
     //Rest

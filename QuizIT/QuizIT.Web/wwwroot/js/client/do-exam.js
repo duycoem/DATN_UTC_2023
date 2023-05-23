@@ -1,6 +1,6 @@
 ﻿
 //Xủ lý các logic liên quan đến làm bài thi
-var timeDo = 0;
+var TIME_DO = 0;
 $(document).ready(function () {
     startCountDown();
 
@@ -32,13 +32,12 @@ startCountDown = function () {
         }
         if (timer == 0) {
             clearInterval(countDown)
-            //Todo
-            /*toastr.warning(timeDo, "Thông báo");
-            console.log(timeDo);*/
+            //Nộp bài
+            submitExam();
         }
         else {
             timer--;
-            timeDo++;
+            TIME_DO++;
         }
 
     }, 1000);

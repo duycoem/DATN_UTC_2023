@@ -54,16 +54,20 @@ namespace QuizIT.Web.Controllers
             ViewBag.ActivePage = "exam";
             //Lấy thông tin exam
             var examServiceResult = examService.GetById(examId);
+            //Lấy bảng xếp hạng
+            var rankServiceResult = examService.GetAllRank(examId);
             //Sai id
             if (examServiceResult.ResponseCode == ResponseCode.NOT_FOUND)
             {
                 return Redirect("~/error");
             }
             //Gọi service bị lỗi
-            if (examServiceResult.ResponseCode != ResponseCode.SUCCESS)
+            if (examServiceResult.ResponseCode != ResponseCode.SUCCESS ||
+                rankServiceResult.ResponseCode != ResponseCode.SUCCESS)
             {
                 return Redirect("~/internal-server-error");
             }
+            ViewBag.RankLst = rankServiceResult.Result;
             return View(examServiceResult.Result.FirstOrDefault());
         }
 

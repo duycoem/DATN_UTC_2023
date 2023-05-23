@@ -84,7 +84,7 @@ namespace QuizIT.Service.Entities
             modelBuilder.Entity<History>(entity =>
             {
                 entity.Property(e => e.CreatedAt)
-                    .HasColumnType("date")
+                    .HasColumnType("datetime")
                     .HasDefaultValueSql("(getdate())");
 
                 entity.HasOne(d => d.Exam)
