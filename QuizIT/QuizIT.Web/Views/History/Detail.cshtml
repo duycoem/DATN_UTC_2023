@@ -24,6 +24,7 @@
     </p>
     <p class="text-center exam-sub-title">Số câu hỏi: @Model.Exam.ExamDetail.Count()</p>
     <p class="text-center exam-sub-title">Số câu làm đúng: @Model.Point</p>
+    <p class="text-center exam-sub-title">Trạng thái đề: @(Model.Exam.IsActive == true ? "Hoạt động" : "Không hoạt động")</p>
     <p class="text-center exam-sub-title">Ngày làm: @Model.CreatedAt.ToString("dd/MM/yyyy HH:mm")</p>
 </div>
 @foreach (var examDetail in Model.Exam.ExamDetail.OrderBy(c => c.Order))

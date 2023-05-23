@@ -2,6 +2,7 @@
 using QuizIT.Service.Entities;
 using QuizIT.Service.IServices;
 using QuizIT.Service.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -116,7 +117,7 @@ namespace QuizIT.Service.Services
                 dbContext.Question.Add(question);
                 await dbContext.SaveChangesAsync();
             }
-            catch
+            catch(Exception e)
             {
                 serviceResult.ResponseCode = ResponseCode.INTERNAL_SERVER_ERROR;
                 serviceResult.ResponseMess = ResponseMessage.INTERNAL_SERVER_ERROR;
