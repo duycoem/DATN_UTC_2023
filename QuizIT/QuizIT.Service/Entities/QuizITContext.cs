@@ -30,7 +30,7 @@ namespace QuizIT.Service.Entities
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-                optionsBuilder.UseLazyLoadingProxies().UseSqlServer("Data Source=DESKTOP-2VOJQKK;Database=QuizIT;User Id=admin;Password=Elhplncda1234567(;");
+                optionsBuilder.UseLazyLoadingProxies().UseSqlServer("Data Source=DESKTOP-2VOJQKK;Database=QuizIT;User Id=admin;Password=Elhplncda123456(;");
             }
         }
 

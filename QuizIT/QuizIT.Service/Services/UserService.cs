@@ -111,7 +111,7 @@ namespace QuizIT.Service.Services
                 await dbContext.User.AddAsync(user);
                 await dbContext.SaveChangesAsync();
             }
-            catch (Exception e)
+            catch
             {
                 serviceResult.ResponseCode = ResponseCode.INTERNAL_SERVER_ERROR;
                 serviceResult.ResponseMess = ResponseMessage.INTERNAL_SERVER_ERROR;

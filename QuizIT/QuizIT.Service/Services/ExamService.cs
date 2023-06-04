@@ -21,7 +21,7 @@ namespace QuizIT.Service.Services
         private readonly string NOT_FOUND_HISTORY = "Lịch sử không tồn tại";
         private readonly string INAVTIVE = "Bộ đề không hoạt động";
         private readonly string SUBMIT_SUCCESS = "Nộp bài thành công";
-        private readonly string SUBMIT_AGAIN_SUCCESS = "Chấm bài lại thành công";
+        private readonly string SUBMIT_AGAIN_SUCCESS = "Chấm lại bài thành công";
 
         public ServiceResult<Rank> GetAllRank(int examId)
         {
@@ -400,6 +400,7 @@ namespace QuizIT.Service.Services
                 }
                 int point = 0;
                 List<HistoryDetail> historyDetailLst = new List<HistoryDetail>();
+                //Duyệt các câu hỏi của bộ đề
                 foreach (var examDetail in exam.ExamDetail)
                 {
                     //Kiểm tra xem người dùng có trả lời câu hỏi này hay k
