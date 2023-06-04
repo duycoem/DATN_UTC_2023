@@ -111,7 +111,12 @@ namespace QuizIT.Web.Areas.Admin.Controllers
                     {
                         //Dữ liệu bắt đầu từ dòng 2 vì dòng 1 là của tiêu đề 
                         if (row >= 2)
-                        {
+                        {   
+                            //Hết dữ liệu để đọc
+                            if(reader.GetValue(0) == null)
+                            {
+                                break;
+                            }
                             questionLst.Add(new Question
                             {
                                 CategoryId = categoryId,

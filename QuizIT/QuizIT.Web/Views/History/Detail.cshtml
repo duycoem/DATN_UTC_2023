@@ -1,6 +1,7 @@
 ﻿@using QuizIT.Service.Entities
 @using QuizIT.Service.Models
 @using QuizIT.Common.Models
+@using static QuizIT.Common.Constant.Role  
 @model History
 
 
@@ -26,6 +27,10 @@
     <p class="text-center exam-sub-title">Số câu làm đúng: @Model.Point</p>
     <p class="text-center exam-sub-title">Trạng thái đề: @(Model.Exam.IsActive == true ? "Hoạt động" : "Không hoạt động")</p>
     <p class="text-center exam-sub-title">Ngày làm: @Model.CreatedAt.ToString("dd/MM/yyyy HH:mm")</p>
+    @if (CurrentUser.Role == ADMIN)
+    {
+        <p class="text-center exam-sub-title">Người làm: @Model.User.FullName.Trim()</p>
+    }
 </div>
 @foreach (var examDetail in Model.Exam.ExamDetail.OrderBy(c => c.Order))
 {

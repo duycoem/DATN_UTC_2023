@@ -31,14 +31,12 @@ namespace QuizIT.Service.Services
             };
             try
             {
-
                 serviceResult.Result = dbContext.Rank
                     .Where(q => q.ExamId == examId)
                     .OrderByDescending(q => q.Point)
                     .ThenBy(q => q.TimeDoExam)
                     .Take(10)
                     .ToList();
-
             }
             catch
             {

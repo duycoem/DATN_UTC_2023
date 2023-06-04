@@ -300,9 +300,8 @@ setSelectedQuestionIdLst = function () {
     else {
         $("#table-question-exam tbody tr").each(function () {
             const questionId = parseInt($(this).attr("data-target"));
-            //Chưa có câu hỏi nào
+            //Setup table html
             if (selectedQuestionIdLst.length == 0) {
-                //Setup table html
                 $("#table-question-selected").html(
                     "<table class='table table-hover'>" +
                     "   <thead>" +
