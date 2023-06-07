@@ -361,16 +361,21 @@ body::-webkit-scrollbar-thumb {
     top: 100px;
 }
 
-.btn-submit-exam {
+.btn-submit-exam, #btn-do-again, #btn-export-excel {
     position: fixed;
-    right: 20px;
     bottom: 20px;
 }
 
+.btn-submit-exam {
+    right: 20px;
+}
+
 #btn-do-again {
-    position: fixed;
     right: 110px;
-    bottom: 20px;
+}
+
+#btn-export-excel {
+    right: 218px;
 }
 
 .question-item {

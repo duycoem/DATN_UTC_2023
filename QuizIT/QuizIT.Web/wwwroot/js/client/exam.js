@@ -1,4 +1,5 @@
-﻿//Xủ lý các logic liên quan đến làm bài thi
+﻿
+//Xủ lý các logic liên quan đến làm bài thi
 $(document).ready(function () {
 
     //#region SỰ KIỆN TÌM KIẾM BỘ ĐỀ
@@ -30,7 +31,19 @@ $(document).ready(function () {
     $(document).on("click", "#btn-submit", function () {
         //Kiểm tra người dùng đã chọn đủ đáp án hay chưa
         if ($(".question-item input").length / 4 != $(".question-item input:checked").length) {
-            toastr.error("Hãy chọn đủ đáp án", "Thông báo");
+            //toastr.error("Hãy chọn đủ đáp án", "Thông báo");
+            //Chưa chọn đủ đáp án
+            let mess = "Câu hỏi số";
+            $(".question-item").each(function () {
+                const order = $(this).attr("data-order");
+                if ($(this).find("input:checked").length == 0) {
+                    mess += ` ${order},`;
+                }
+            })
+            //Loại bỏ dấu , cuối
+            mess = mess.substring(0, mess.length - 1);
+            mess += " chưa được chọn. Vui lòng hoàn thành tất cả câu hỏi trước khi nộp bài";
+            toastr.error(mess, "Thông báo");
         }
         //Đã chọn đủ đáp án
         else {
@@ -89,6 +102,63 @@ $(document).ready(function () {
         }
 
         return false;
+    });
+    //#endregion
+
+    //#region SỰ KIỆN EXPORT KẾT QUẢ THI
+    $(document).on("click", "#btn-export-excels", function () {
+        let lstExportHistory = [];
+        $(".question-item").each(function () {
+            let questionContent = $(this).find(".question-title").text().trim();
+            let answerSelect, result = "";
+            const lstInputChecked = $(this).find("input:checked");
+            //Chưa chọn
+            if (lstInputChecked.length == 0) {
+                answerSelect = "Chưa chọn";
+            }
+            //Có chọn đáp án thì lấy ra nội dung đáp án đã chọn
+            else {
+                const idInput = $(lstInputChecked[0]).attr("id");
+                answerSelect = $(`label[for=${idInput}]`).text().trim();
+            }
+            result = $(this).find("p.font-weight-bold").text().trim();
+            lstExportHistory.push({
+                QuestionContent: questionContent,
+                AnswerSelect: answerSelect,
+                Result: result
+            });
+        });
+        const pathLst = window.location.pathname.split("/");
+        const historyId = parseInt(pathLst[pathLst.length - 1]);
+        $.ajax({
+            url: "/history/eventexporthistory",
+            type: "POST",
+            data: {
+                historyId: historyId,
+                lstExportHistory: lstExportHistory
+            },
+            beforeSend: function () {
+                showLoading();
+            },
+            success: function () {
+                console.log("a");
+                /*if (response.responseCode == "200") {
+                    toastr.success(response.responseMess, "Thông báo");
+                    setTimeout(function () {
+                        location.reload();
+                    }, 800)
+                }
+                else {
+                    toastr.error(response.responseMess, "Thông báo");
+                }*/
+            },
+            error: function () {
+                toastr.error("Máy chủ tạm thời không phản hồi, vui lòng thử lại sau", "Thông báo");
+
+            },
+        }).always(function () {
+            hideLoading();
+        });
     });
     //#endregion
 });

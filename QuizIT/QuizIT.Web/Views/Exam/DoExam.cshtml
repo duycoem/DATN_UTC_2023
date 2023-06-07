@@ -23,7 +23,7 @@
 </div>
 @foreach (var examDetail in Model.ExamDetail.OrderBy(c => c.Order))
 {
-    <div class="question-item" data-target="@examDetail.QuestionId">
+    <div class="question-item" data-target="@examDetail.QuestionId" data-order="@examDetail.Order">
         <p class="question-title">
             <b>Câu @examDetail.Order: @(examDetail.Question.Content)</b>
         </p>

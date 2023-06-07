@@ -31,9 +31,14 @@ namespace QuizIT.Web
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(o =>
                 {
-                    o.LoginPath = "/admin/login";
+                    o.LoginPath = "/";
                     o.ExpireTimeSpan = TimeSpan.FromDays(2);
                 });
+
+            services.Configure<IISServerOptions>(options =>
+            {
+                options.AllowSynchronousIO = true;
+            });
 
             //Cấu hình để gọi HttpContext
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();

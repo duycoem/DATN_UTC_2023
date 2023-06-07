@@ -1,10 +1,13 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using OfficeOpenXml;
+using OfficeOpenXml.Style;
 using QuizIT.Common.Helpers;
 using QuizIT.Common.Models;
 using QuizIT.Service.IServices;
 using QuizIT.Service.Models;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -78,5 +81,80 @@ namespace QuizIT.Web.Controllers
             var serviceResult = await examService.MarkPointAgain(historyId, timeDoExam);
             return Json(serviceResult);
         }
+
+         [HttpPost]
+         public void EventExportHistory(int historyId, List<ExportHistory> lstExportHistory)
+         {
+             try
+             {
+                 var historyServiceResult = examService.GetHistoryById(18);
+                 //Văng lỗi ra FE để ajax xử lý
+                 if (historyServiceResult.ResponseCode != ResponseCode.SUCCESS)
+                 {
+                     throw new Exception();
+                 }
+                 ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+                 ExcelPackage excel = new ExcelPackage();
+                 var workSheet = excel.Workbook.Worksheets.Add("Kết quả làm bài");
+                 //Css cho sheet
+                 workSheet.TabColor = System.Drawing.Color.Black;
+                 workSheet.DefaultRowHeight = 12;
+                 //Setup tiêu đề
+                 workSheet.Row(1).Height = 20;
+                 workSheet.Row(1).Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                 workSheet.Row(1).Style.Font.Bold = true;
+                 workSheet.Cells[1, 1].Value = "Câu hỏi";
+                 workSheet.Cells[1, 2].Value = "Đáp án đã chọn";
+                 workSheet.Cells[1, 3].Value = "Kết quả";
+
+                 string excelName = "studentsRecord";
+
+                 using (var memoryStream = new MemoryStream())
+                 {
+                     Response.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+                     Response.Headers.Add("content-disposition", "attachment; filename=" + excelName + ".xlsx");
+                     excel.SaveAs(memoryStream);
+                     memoryStream.WriteTo(Response.Body);
+                     Response.Body.Flush();
+                 }
+             }
+             catch (Exception e)
+             {
+                 string mess = e.Message;
+             }
+         }
+
+        /*[HttpPost]
+        public IActionResult EventExportHistory(int historyId, List<ExportHistory> lstExportHistory)
+        {
+
+            var historyServiceResult = examService.GetHistoryById(18);
+            //Văng lỗi ra FE để ajax xử lý
+            if (historyServiceResult.ResponseCode != ResponseCode.SUCCESS)
+            {
+                throw new Exception();
+            }
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+            ExcelPackage excel = new ExcelPackage();
+            var workSheet = excel.Workbook.Worksheets.Add("Kết quả làm bài");
+            //Css cho sheet
+            workSheet.TabColor = System.Drawing.Color.Black;
+            workSheet.DefaultRowHeight = 12;
+            //Setup tiêu đề
+            workSheet.Row(1).Height = 20;
+            workSheet.Row(1).Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+            workSheet.Row(1).Style.Font.Bold = true;
+            workSheet.Cells[1, 1].Value = "Câu hỏi";
+            workSheet.Cells[1, 2].Value = "Đáp án đã chọn";
+            workSheet.Cells[1, 3].Value = "Kết quả";
+
+            string excelName = "studentsRecord";
+
+            var memoryStream = new MemoryStream();
+            excel.SaveAs(memoryStream);
+            var contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+
+            return File(memoryStream, contentType, excelName);
+        }*/
     }
 }

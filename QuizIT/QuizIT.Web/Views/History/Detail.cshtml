@@ -1,7 +1,7 @@
 ﻿@using QuizIT.Service.Entities
 @using QuizIT.Service.Models
 @using QuizIT.Common.Models
-@using static QuizIT.Common.Constant.Role  
+@using static QuizIT.Common.Constant.Role
 @model History
 
 
@@ -88,6 +88,11 @@
         </p>
     </div>
 }
+<form action="/history/eventexporthistory" method="post">
+    <button class="btn-base m-btn-grey text-white" id="btn-export-excel">
+        Xuất Excel
+    </button>
+</form>
 
 <a class="btn-base m-btn-primary text-white ml-2" href="~/bo-de/lam-de/@Model.ExamId" id="btn-do-again">
     Thi lại ngay
