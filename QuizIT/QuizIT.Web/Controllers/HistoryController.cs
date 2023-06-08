@@ -3,6 +3,7 @@ using OfficeOpenXml;
 using OfficeOpenXml.Style;
 using QuizIT.Common.Helpers;
 using QuizIT.Common.Models;
+using QuizIT.Service.Entities;
 using QuizIT.Service.IServices;
 using QuizIT.Service.Models;
 using System;
@@ -87,7 +88,7 @@ namespace QuizIT.Web.Controllers
          {
              try
              {
-                 var historyServiceResult = examService.GetHistoryById(18);
+                 var historyServiceResult = examService.GetHistoryById(historyId);
                  //Văng lỗi ra FE để ajax xử lý
                  if (historyServiceResult.ResponseCode != ResponseCode.SUCCESS)
                  {
@@ -123,7 +124,11 @@ namespace QuizIT.Web.Controllers
                  string mess = e.Message;
              }
          }
-
+            
+        private List<ExportHistory> getLstExportHistory(History history)
+        {
+            return null;
+        }
         /*[HttpPost]
         public IActionResult EventExportHistory(int historyId, List<ExportHistory> lstExportHistory)
         {

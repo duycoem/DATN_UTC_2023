@@ -515,6 +515,66 @@ namespace QuizIT.Service.Services
             return serviceResult;
         }
 
+        public ServiceResult<ExportHistory> GetLstExportHistory(int historyId)
+        {
+            ServiceResult<ExportHistory> serviceResult = new ServiceResult<ExportHistory>
+            {
+                ResponseCode = ResponseCode.SUCCESS
+            };
+            try
+            {
+                var history = dbContext.History.FirstOrDefault(c => c.Id == historyId);
+                if (history == null)
+                {
+                    return new ServiceResult<ExportHistory>
+                    {
+                        ResponseCode = ResponseCode.NOT_FOUND,
+                    };
+                }
+                //Duyệt danh sách đáp án đã chọn
+                foreach (var historyDetail in history.HistoryDetail)
+                {
+                    ExportHistory exportHistory = new ExportHistory
+                    {
+                        QuestionContent = history.Exam.ExamName
+                    };
+                    switch (historyDetail.AnswerSelect)
+                    {
+                        case "A":
+                            exportHistory.AnswerSelect = $"A. {historyDetail.Question.AnswerA}";
+                            exportHistory.Result = (historyDetail.Question.AnswerCorrect == "A" ? "Đúng" : "Sai");
+                            break;
+                        case "B":
+                            exportHistory.AnswerSelect = $"B. {historyDetail.Question.AnswerB}";
+                            exportHistory.Result = (historyDetail.Question.AnswerCorrect == "B" ? "Đúng" : "Sai");
+                            break;
+                        case "C":
+                            exportHistory.AnswerSelect = $"C. {historyDetail.Question.AnswerC}";
+                            exportHistory.Result = (historyDetail.Question.AnswerCorrect == "C" ? "Đúng" : "Sai");
+                            break;
+                        case "D":
+                            exportHistory.AnswerSelect = $"D. {historyDetail.Question.AnswerD}";
+                            exportHistory.Result = (historyDetail.Question.AnswerCorrect == "D" ? "Đúng" : "Sai");
+                            break;
+                        default:
+                            exportHistory.AnswerSelect = "Chưa chọn";
+                            exportHistory.Result = "Chưa chọn";
+                            break;
+                    }
+
+                    //Thêm vào serviceResult
+                    serviceResult.Result.Add(exportHistory);
+                }
+            }
+            catch
+            {
+                serviceResult.ResponseCode = ResponseCode.INTERNAL_SERVER_ERROR;
+                serviceResult.ResponseMess = ResponseMessage.INTERNAL_SERVER_ERROR;
+            }
+
+            return serviceResult;
+        }
+
         private async Task UpdateRank(int examId, double timeDoExam, int point)
         {
             //Kiểm tra xem người dùng đã có trong bảng xếp hạng này hay chưa

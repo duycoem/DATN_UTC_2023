@@ -18,5 +18,6 @@ namespace QuizIT.Service.IServices
         Task<ServiceResult<int>> MarkPoint(int examId, double timeDoExam, List<QuestionSelect> questionSelectLst);
         Task<ServiceResult<int>> MarkPointAgain(int historyId, double timeDoExam);
         ServiceResult<History> GetHistoryById(int historyId);
+        ServiceResult<ExportHistory> GetLstExportHistory(int historyId);
     }
 }
