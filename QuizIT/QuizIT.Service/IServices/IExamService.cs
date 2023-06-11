@@ -8,6 +8,7 @@ namespace QuizIT.Service.IServices
 {
     public interface IExamService
     {
+        ServiceResult<Exam> GetTopExam(int top);
         ServiceResult<Rank> GetAllRank(int examId);
         ServiceResult<History> GetHistoryPage(FilterHistory filter);
         ServiceResult<Exam> GetPage(FilterExam filter);

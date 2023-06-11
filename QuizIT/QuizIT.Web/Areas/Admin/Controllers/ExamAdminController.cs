@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using QuizIT.Common.Helpers;
 using QuizIT.Common.Models;
 using QuizIT.Service.Entities;
@@ -69,16 +70,27 @@ namespace QuizIT.Web.Areas.Admin.Controllers
         public IActionResult Statistical()
         {
             ViewBag.ActivePage = "exam";
+            const int top = 5;
             //Lấy ra tất cả thể loại để filter
-            var categoryServiceResult = categoryService.GetPage(new FilterCategory
-            {
-                PageSize = int.MaxValue
-            });
+            var examServiceResult = examService.GetTopExam(top);
             //Gọi service bị lỗi
-            if (categoryServiceResult.ResponseCode != ResponseCode.SUCCESS)
+            if (examServiceResult.ResponseCode != ResponseCode.SUCCESS)
             {
                 return Redirect("~/internal-server-error");
             }
+            var lstExam = examServiceResult.Result;
+            List<string> lstLabel = new List<string>();
+            List<long> lstData = new List<long>();
+            //Duyệt kết quả từ service để setup label và data cho việc vẽ biểu đồ
+            foreach (var exam in lstExam)
+            {
+                lstLabel.Add(exam.ExamName);
+                lstData.Add(exam.History.Count);
+            }
+            //Setup viewbag để gửi xuống view
+            ViewBag.Labels = JsonConvert.SerializeObject(lstLabel);
+            ViewBag.Data = JsonConvert.SerializeObject(lstData);
+            ViewBag.Top = top;
             return View();
         }
 

@@ -45,6 +45,7 @@
         <p class="text-center exam-sub-title">Thời gian làm: @(Model.Time.ToString() + " phút")</p>
         <p class="text-center exam-sub-title">Số câu hỏi: @Model.ExamDetail.Count()</p>
         <p class="text-center exam-sub-title">Người tạo: @Model.CreateByNavigation.FullName.Trim()</p>
+        <p class="text-center exam-sub-title">Số lượt làm: @Model.History.Count</p>
         <p class="text-center exam-sub-title">
             <i>Lưu ý: Khi hết thời gian làm bài, hệ thống sẽ tự nộp bài</i>
         </p>

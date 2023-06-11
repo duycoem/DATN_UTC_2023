@@ -550,5 +550,27 @@ namespace QuizIT.Service.Services
             }
             await dbContext.SaveChangesAsync();
         }
+
+        public ServiceResult<Exam> GetTopExam(int top)
+        {
+            ServiceResult<Exam> serviceResult = new ServiceResult<Exam>
+            {
+                ResponseCode = ResponseCode.SUCCESS
+            };
+            try
+            {
+                serviceResult.Result = dbContext.Exam
+                     .OrderByDescending(q => q.History.Count)
+                     .Take(top == -1 ? int.MaxValue : top)
+                     .ToList();
+            }
+            catch
+            {
+                serviceResult.ResponseCode = ResponseCode.INTERNAL_SERVER_ERROR;
+                serviceResult.ResponseMess = ResponseMessage.INTERNAL_SERVER_ERROR;
+            }
+
+            return serviceResult;
+        }
     }
 }
