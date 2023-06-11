@@ -35,6 +35,7 @@ namespace QuizIT.Service.Services
                         q.Content.ToLower().Contains(filter.Name.ToLower()) &&
                         (filter.Category == -1 || q.CategoryId == filter.Category)
                     )
+                    .OrderByDescending(q => q.Id)
                     .Skip((filter.PageNumber - 1) * filter.PageSize)
                     .Take(filter.PageSize)
                     .ToList();

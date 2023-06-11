@@ -32,6 +32,7 @@ namespace QuizIT.Service.Services
                 }
                 serviceResult.Result = dbContext.Category
                     .Where(c => c.CategoryName.ToLower().Contains(filter.Name.ToLower()))
+                    .OrderByDescending(c => c.Id)
                     .Skip((filter.PageNumber - 1) * filter.PageSize)
                     .Take(filter.PageSize)
                     .ToList();

@@ -65,6 +65,23 @@ namespace QuizIT.Web.Areas.Admin.Controllers
             return View();
         }
 
+        [Route("/admin/bo-de/thong-ke")]
+        public IActionResult Statistical()
+        {
+            ViewBag.ActivePage = "exam";
+            //Lấy ra tất cả thể loại để filter
+            var categoryServiceResult = categoryService.GetPage(new FilterCategory
+            {
+                PageSize = int.MaxValue
+            });
+            //Gọi service bị lỗi
+            if (categoryServiceResult.ResponseCode != ResponseCode.SUCCESS)
+            {
+                return Redirect("~/internal-server-error");
+            }
+            return View();
+        }
+
         [Route("/admin/bo-de/chi-tiet/{examId}")]
         public IActionResult Detail(int examId)
         {

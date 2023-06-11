@@ -38,6 +38,7 @@ namespace QuizIT.Service.Services
                        (filter.Role == -1 || c.RoleId == filter.Role) &&
                        c.Id != CurrentUser.Id //Không lấy bản ghi người đang đăng nhập
                       )
+                    .OrderByDescending(c => c.Id)
                     .Skip((filter.PageNumber - 1) * filter.PageSize)
                     .Take(filter.PageSize)
                     .ToList();

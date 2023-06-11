@@ -154,6 +154,7 @@ namespace QuizIT.Service.Services
                          (filter.Category == -1 || q.CategoryId == filter.Category) &&
                          (filter.IsActive == -1 || q.IsActive == Convert.ToBoolean(filter.IsActive))
                      )
+                     .OrderByDescending(q => q.Id)
                      .Skip((filter.PageNumber - 1) * filter.PageSize)
                      .Take(filter.PageSize)
                      .ToList();
@@ -399,7 +400,7 @@ namespace QuizIT.Service.Services
                 int point = 0;
                 List<HistoryDetail> historyDetailLst = new List<HistoryDetail>();
                 //Duyệt các câu hỏi của bộ đề
-                foreach (var examDetail in exam.ExamDetail)
+                foreach (var examDetail in exam.ExamDetail.OrderBy(c => c.Order))
                 {
                     //Kiểm tra xem người dùng có trả lời câu hỏi này hay k
                     var questionSelect = questionSelectLst.FirstOrDefault(c => c.QuestionId == examDetail.QuestionId);
@@ -512,66 +513,6 @@ namespace QuizIT.Service.Services
                 serviceResult.ResponseCode = ResponseCode.INTERNAL_SERVER_ERROR;
                 serviceResult.ResponseMess = ResponseMessage.INTERNAL_SERVER_ERROR;
             }
-            return serviceResult;
-        }
-
-        public ServiceResult<ExportHistory> GetLstExportHistory(int historyId)
-        {
-            ServiceResult<ExportHistory> serviceResult = new ServiceResult<ExportHistory>
-            {
-                ResponseCode = ResponseCode.SUCCESS
-            };
-            try
-            {
-                var history = dbContext.History.FirstOrDefault(c => c.Id == historyId);
-                if (history == null)
-                {
-                    return new ServiceResult<ExportHistory>
-                    {
-                        ResponseCode = ResponseCode.NOT_FOUND,
-                    };
-                }
-                //Duyệt danh sách đáp án đã chọn
-                foreach (var historyDetail in history.HistoryDetail)
-                {
-                    ExportHistory exportHistory = new ExportHistory
-                    {
-                        QuestionContent = history.Exam.ExamName
-                    };
-                    switch (historyDetail.AnswerSelect)
-                    {
-                        case "A":
-                            exportHistory.AnswerSelect = $"A. {historyDetail.Question.AnswerA}";
-                            exportHistory.Result = (historyDetail.Question.AnswerCorrect == "A" ? "Đúng" : "Sai");
-                            break;
-                        case "B":
-                            exportHistory.AnswerSelect = $"B. {historyDetail.Question.AnswerB}";
-                            exportHistory.Result = (historyDetail.Question.AnswerCorrect == "B" ? "Đúng" : "Sai");
-                            break;
-                        case "C":
-                            exportHistory.AnswerSelect = $"C. {historyDetail.Question.AnswerC}";
-                            exportHistory.Result = (historyDetail.Question.AnswerCorrect == "C" ? "Đúng" : "Sai");
-                            break;
-                        case "D":
-                            exportHistory.AnswerSelect = $"D. {historyDetail.Question.AnswerD}";
-                            exportHistory.Result = (historyDetail.Question.AnswerCorrect == "D" ? "Đúng" : "Sai");
-                            break;
-                        default:
-                            exportHistory.AnswerSelect = "Chưa chọn";
-                            exportHistory.Result = "Chưa chọn";
-                            break;
-                    }
-
-                    //Thêm vào serviceResult
-                    serviceResult.Result.Add(exportHistory);
-                }
-            }
-            catch
-            {
-                serviceResult.ResponseCode = ResponseCode.INTERNAL_SERVER_ERROR;
-                serviceResult.ResponseMess = ResponseMessage.INTERNAL_SERVER_ERROR;
-            }
-
             return serviceResult;
         }
 
