@@ -106,7 +106,7 @@ namespace QuizIT.Web.Controllers
                 using (var memoryStream = new MemoryStream())
                 {
                     Response.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
-                    Response.Headers.Add("content-disposition", "attachment; filename=" + excelName + ".xlsx");
+                    Response.Headers.Add("content-disposition", "attachment; filename=Hà_Duy_Anh" + ".xlsx");
                     excel.SaveAs(memoryStream);
                     memoryStream.WriteTo(Response.Body);
                     Response.Body.Flush();

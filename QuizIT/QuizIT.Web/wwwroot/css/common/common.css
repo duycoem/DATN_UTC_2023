@@ -339,7 +339,7 @@ body::-webkit-scrollbar-thumb {
 }
 
 .table-hover tbody tr.selected {
-    background-color: rgba(0,0,0,.075);
+    background-color: rgb(201 201 201);
 }
 
 #table-question-exam td:nth-child(2) {
